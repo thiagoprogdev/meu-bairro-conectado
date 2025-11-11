@@ -1,0 +1,7 @@
+{
+  "name": "Meu Bairro Conectado",
+  "description": "A platform to connect local businesses with residents. Discover services, shops, and restaurants in your neighborhood using AI-powered search, and help local commerce thrive.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
