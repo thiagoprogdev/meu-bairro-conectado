@@ -4,22 +4,22 @@ import { Business } from '../types';
 export const businesses: Business[] = [
   {
     id: 1,
-    name: 'Salão Moderno',
-    category: 'Salão de Beleza',
-    description: 'Oferecemos os melhores serviços de corte, coloração, e tratamentos capilares do bairro. Nossa equipe de profissionais está pronta para realçar sua beleza. Venha nos visitar e confira nossas promoções exclusivas! Ambiente familiar e atendimento de primeira.',
-    shortDescription: 'Cortes, coloração e tratamentos. Agende seu horário!',
+    name: 'Total bazar material de construção',
+    category: 'Material de Construção',
+    description: 'A maior variedade de produtos com os melhores preços da região.',
+    shortDescription: 'Tudo para construção, reforma e acabamento.',
     location: {
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Salão+Moderno'
+      mapsUrl: 'https://maps.app.goo.gl/wJd3aepUmxSGs6nd7'
     },
     contact: {
-      phone: '5511999998888',
-      instagram: 'https://instagram.com/salaomoderno',
-      facebook: 'https://facebook.com/salaomoderno'
+      phone: '55021995544111',
+      instagram: 'https://instagram.com/totalbazar',
+      facebook: 'https://facebook.com/totalbazar'
     },
     photos: [
-      '/images/placeholder-beleza-1.png',
-      '/images/placeholder-beleza-2.png',
-      '/images/placeholder-beleza-3.png'
+      'publico/images/total-bazar/logo-total-bazar.jpg',
+      'publico/images/total-bazar/totalbazar1.jpg',
+      'publico/images/total-bazar/totalbazar2.jpg',
     ],
     reviews: [
       { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Cliente Anônimo" },
@@ -28,7 +28,7 @@ export const businesses: Business[] = [
   },
   {
     id: 2,
-    name: 'Lanche Feliz',
+    name: 'Luz da alvorada',
     category: 'Lanchonete',
     description: 'Os melhores hambúrgueres artesanais da região! Usamos ingredientes frescos e selecionados para garantir um sabor inesquecível. Temos opções vegetarianas e um cardápio variado de porções e bebidas. Perfeito para um happy hour ou um lanche em família.',
     shortDescription: 'Hambúrgueres artesanais, porções e bebidas.',
