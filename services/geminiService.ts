@@ -6,11 +6,15 @@ if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const genAI = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+});
+
+export default genAI;
 
 export const findNearbyPlaces = async (query: string, location: { latitude: number; longitude: number; }) => {
     try {
-        const response = await ai.models.generateContent({
+        const response = await genAI.models.generateContent({
             model: "gemini-2.5-flash",
             contents: query,
             config: {
@@ -42,7 +46,7 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
         };
         const textPart = { text: prompt };
 
-        const response: GenerateContentResponse = await ai.models.generateContent({
+        const response: GenerateContentResponse = await genAI.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: { parts: [imagePart, textPart] },
         });
@@ -55,7 +59,7 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
 
 export const getChatResponse = async (history: ChatMessage[], newMessage: string) => {
     try {
-        const chat: Chat = ai.chats.create({
+        const chat: Chat = genAI.chats.create({
             model: 'gemini-2.5-flash',
             history: history.map(msg => ({
                 role: msg.role,
