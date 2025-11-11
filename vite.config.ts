@@ -6,25 +6,25 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
 
   return {
-    base: './', // 👈 garante que o app funcione na Vercel e local
+    base: './', // 👈 ESSENCIAL para Vercel e para abrir o index.html localmente
     server: {
       port: 3000,
       host: '0.0.0.0',
     },
     plugins: [react()],
     define: {
-      'process.env': {}, // 👈 evita erro "process is not defined"
+      'process.env': {},
       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'), // 👈 aponta para a pasta "src"
+        '@': path.resolve(__dirname, 'src'),
       },
     },
     build: {
-      chunkSizeWarningLimit: 2000, // Aumenta o limite para 2 MB
-      outDir: 'dist', // 👈 garante compatibilidade com Vercel
+      chunkSizeWarningLimit: 2000,
+      outDir: 'dist',
     },
   };
 });
