@@ -3,22 +3,23 @@ import { Business } from '../types';
 export const businesses: Business[] = [
   {
     id: 1,
-    name: 'Salão Moderno',
-    category: 'Salão de Beleza',
-    description: 'Oferecemos os melhores serviços de corte, coloração, e tratamentos capilares do bairro. Nossa equipe de profissionais está pronta para realçar sua beleza. Venha nos visitar e confira nossas promoções exclusivas! Ambiente familiar e atendimento de primeira.',
-    shortDescription: 'Cortes, coloração e tratamentos. Agende seu horário!',
+    name: 'Total bazar material de construção',
+    category: 'Material de Construção',
+    description: 'Os melhores preços da região com a maior variedade de produtos você só vai encontrar aqui.',
+    shortDescription: 'Preço e atendimento que você merece.',
     location: {
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Salão+Moderno'
+      mapsUrl: 'https://maps.app.goo.gl/r5cGp6ArR758VwMQ6'
     },
     contact: {
-      phone: '5511999998888',
-      instagram: 'https://instagram.com/salaomoderno',
-      facebook: 'https://facebook.com/salaomoderno'
+      phone: '5521995544111',
+      instagram: 'https://instagram.com/totalbazar',
+      facebook: 'https://facebook.com/totalbazar'
     },
     photos: [
-      'https://via.placeholder.com/300/16a34a/FFFFFF?text=Corte+Moderno',
-      'https://via.placeholder.com/300/4d7c0f/FFFFFF?text=Manicure',
-      'https://via.placeholder.com/300/84cc16/FFFFFF?text=Ambiente'
+      '/imagens/total-bazar/file1.jpg',
+      '/imagens/total-bazar/file2.jpg',
+      '/imagens/total-bazar/file3.jpg',
+      '/imagens/total-bazar/file4.jpg'
     ],
     reviews: [
       { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Maria S." },
