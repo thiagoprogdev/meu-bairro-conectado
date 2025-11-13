@@ -16,10 +16,10 @@ export const businesses: Business[] = [
       facebook: 'https://facebook.com/totalbazar'
     },
     photos: [
-      '/imagens/total-bazar/file1.jpg',
-      '/imagens/total-bazar/file2.jpg',
-      '/imagens/total-bazar/file3.jpg',
-      '/imagens/total-bazar/file4.jpg'
+      '/images/total-bazar/file1.jpg',
+      '/images/total-bazar/file2.jpg',
+      '/images/total-bazar/file3.jpg',
+      '/images/total-bazar/file4.jpg'
     ],
     reviews: [
       { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Maria S." },
