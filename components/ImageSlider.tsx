@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 const slides = [
-    { url: 'https://via.placeholder.com/1200x400/166534/FFFFFF?text=Descubra+seu+Bairro', alt: 'Descubra seu Bairro' },
+    { url: '/images/slide/luz da alvorada.jpg', alt: 'Restaurante Luz da Alvorada' },
     { url: 'https://via.placeholder.com/1200x400/f59e0b/FFFFFF?text=Comércio+Local+Forte', alt: 'Comércio Local Forte' },
     { url: 'https://via.placeholder.com/1200x400/84cc16/FFFFFF?text=Restaurantes+e+Cafés', alt: 'Restaurantes e Cafés' },
     { url: 'https://via.placeholder.com/1200x400/16a34a/FFFFFF?text=Serviços+Essenciais', alt: 'Serviços Essenciais' },
