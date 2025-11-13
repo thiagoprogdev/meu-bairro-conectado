@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Business } from '../types';
 import StarRating from './StarRating';

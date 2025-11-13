@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Business } from '../types';
 

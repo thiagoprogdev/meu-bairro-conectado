@@ -4,11 +4,9 @@ import { ChatMessage } from '../types';
 let ai: GoogleGenAI | null = null;
 
 function getAiInstance(): GoogleGenAI {
-    // FIX: Switched to process.env.API_KEY to follow @google/genai guidelines.
-    // The environment variable is exposed to the client via vite.config.ts.
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
-        console.error("API_KEY environment variable not set. Please configure it in your .env file.");
+        console.error("API_KEY environment variable not set. Please configure it in your .env file with VITE_API_KEY.");
         throw new Error("API_KEY environment variable not set");
     }
     if (!ai) {

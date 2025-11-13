@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Business } from '../types';
 import { businesses } from '../data/businesses';
@@ -140,7 +139,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
             }
 
             const response = await generateText(summaryPrompt);
-            setResultsSummary(response.text);
+            setResultsSummary(response.text ?? null);
 
         } catch (err) {
             setError('Ocorreu um erro ao buscar. Tente novamente.');

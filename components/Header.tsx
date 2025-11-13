@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 
 type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help';
