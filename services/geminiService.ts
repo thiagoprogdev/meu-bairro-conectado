@@ -1,20 +1,23 @@
-
 import { GoogleGenAI, GenerateContentResponse, Chat } from "@google/genai";
 import { ChatMessage } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+let ai: GoogleGenAI | null = null;
+
+function getAiInstance(): GoogleGenAI {
+    if (!process.env.API_KEY) {
+        console.error("API_KEY environment variable not set. Please configure it in your deployment environment.");
+        throw new Error("API_KEY environment variable not set");
+    }
+    if (!ai) {
+        ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    }
+    return ai;
 }
-
-const genAI = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-});
-
-export default genAI;
 
 export const findNearbyPlaces = async (query: string, location: { latitude: number; longitude: number; }) => {
     try {
-        const response = await genAI.models.generateContent({
+        const aiInstance = getAiInstance();
+        const response = await aiInstance.models.generateContent({
             model: "gemini-2.5-flash",
             contents: query,
             config: {
@@ -38,6 +41,7 @@ export const findNearbyPlaces = async (query: string, location: { latitude: numb
 
 export const analyzeImage = async (prompt: string, imageBase64: string, mimeType: string) => {
     try {
+        const aiInstance = getAiInstance();
         const imagePart = {
             inlineData: {
                 data: imageBase64,
@@ -46,7 +50,7 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
         };
         const textPart = { text: prompt };
 
-        const response: GenerateContentResponse = await genAI.models.generateContent({
+        const response: GenerateContentResponse = await aiInstance.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: { parts: [imagePart, textPart] },
         });
@@ -59,7 +63,8 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
 
 export const getChatResponse = async (history: ChatMessage[], newMessage: string) => {
     try {
-        const chat: Chat = genAI.chats.create({
+        const aiInstance = getAiInstance();
+        const chat: Chat = aiInstance.chats.create({
             model: 'gemini-2.5-flash',
             history: history.map(msg => ({
                 role: msg.role,
