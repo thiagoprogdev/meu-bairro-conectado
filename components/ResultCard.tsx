@@ -8,7 +8,8 @@ interface ResultCardProps {
 
 const ResultCard: React.FC<ResultCardProps> = ({ business, onViewDetails }) => {
   const { name, shortDescription, photos, contact } = business;
-  const image = photos[0] || `https://via.placeholder.com/300x200/16a34a/FFFFFF?text=${encodeURIComponent(name)}`;
+  // Use a imagem local como placeholder
+  const image = photos && photos.length > 0 ? photos[0] : '/images/placeholder.jpg';
   
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col justify-between transform hover:-translate-y-1 transition-transform duration-300">

@@ -67,8 +67,12 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">Galeria de Fotos</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                             {photos.map((photo, index) => (
-                                <a href={photo} target="_blank" rel="noopener noreferrer" key={index}>
-                                    <img src={photo} alt={`Foto ${index + 1}`} className="rounded-md object-cover h-32 w-full"/>
+                                <a href={photo} target="_blank" rel="noopener noreferrer" key={index} className="group">
+                                    <img 
+                                        src={photo} 
+                                        alt={`Foto ${index + 1} de ${name}`} 
+                                        className="rounded-md object-cover h-32 w-full transition-transform duration-300 group-hover:scale-105"
+                                    />
                                 </a>
                             ))}
                         </div>
