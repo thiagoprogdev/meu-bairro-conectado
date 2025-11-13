@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage } from '../types';
 import { getChatResponse } from '../services/geminiService';
-import { GenerateContentResponse } from '@google/genai';
 
 const Chatbot: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);

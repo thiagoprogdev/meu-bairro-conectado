@@ -4,15 +4,33 @@ import { ChatMessage } from '../types';
 let ai: GoogleGenAI | null = null;
 
 function getAiInstance(): GoogleGenAI {
-    if (!process.env.API_KEY) {
-        console.error("API_KEY environment variable not set. Please configure it in your deployment environment.");
+    // FIX: Switched to process.env.API_KEY to follow @google/genai guidelines.
+    // The environment variable is exposed to the client via vite.config.ts.
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+        console.error("API_KEY environment variable not set. Please configure it in your .env file.");
         throw new Error("API_KEY environment variable not set");
     }
     if (!ai) {
-        ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        ai = new GoogleGenAI({ apiKey });
     }
     return ai;
 }
+
+export const generateText = async (prompt: string) => {
+    try {
+        const aiInstance = getAiInstance();
+        const response = await aiInstance.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
+        return response;
+    } catch (error) {
+        console.error("Error generating text:", error);
+        throw new Error("Failed to generate text with Gemini API.");
+    }
+};
+
 
 export const findNearbyPlaces = async (query: string, location: { latitude: number; longitude: number; }) => {
     try {

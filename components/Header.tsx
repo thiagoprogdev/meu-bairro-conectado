@@ -60,7 +60,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategory
         <header className="bg-green-800 shadow-md">
             <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <Logo />
+                    <div className="flex items-center">
+                        <button onClick={() => setCurrentPage('home')}>
+                            <Logo />
+                        </button>
+                    </div>
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-4">
                             <button onClick={() => setCurrentPage('home')} className={`${navItemClasses} ${currentPage === 'home' ? activeClasses : inactiveClasses}`}>

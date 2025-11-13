@@ -17,13 +17,13 @@ export const businesses: Business[] = [
       facebook: 'https://facebook.com/salaomoderno'
     },
     photos: [
-      '/images/placeholder-beleza-1.png',
-      '/images/placeholder-beleza-2.png',
-      '/images/placeholder-beleza-3.png'
+      'https://via.placeholder.com/300/16a34a/FFFFFF?text=Corte+Moderno',
+      'https://via.placeholder.com/300/4d7c0f/FFFFFF?text=Manicure',
+      'https://via.placeholder.com/300/84cc16/FFFFFF?text=Ambiente'
     ],
     reviews: [
-      { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Cliente Anônimo" },
-      { rating: 4, comment: "Ótimo lugar, encontrei o que precisava. Apenas um pouco cheio no dia que fui.", author: "Cliente Anônimo" },
+      { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Maria S." },
+      { rating: 4, comment: "Ótimo lugar, gostei do resultado do meu cabelo.", author: "Joana P." },
     ]
   },
   {
@@ -40,11 +40,11 @@ export const businesses: Business[] = [
       instagram: 'https://instagram.com/lanchefeliz',
     },
     photos: [
-      '/images/lanche-feliz/lanche-1.png',
-      '/images/lanche-feliz/lanche-2.png',
+      'https://via.placeholder.com/300/f59e0b/FFFFFF?text=Burger+Duplo',
+      'https://via.placeholder.com/300/fbbf24/FFFFFF?text=Batata+Frita',
     ],
     reviews: [
-      { rating: 5, comment: "O melhor hambúrguer que já comi! Atendimento rápido.", author: "Cliente Anônimo" }
+      { rating: 5, comment: "O melhor hambúrguer que já comi! Atendimento rápido.", author: "Carlos R." }
     ]
   },
    {
@@ -60,10 +60,11 @@ export const businesses: Business[] = [
       phone: '5511977776666',
     },
     photos: [
-      '/images/placeholder-construcao-1.png',
+      'https://via.placeholder.com/300/a3a3a3/FFFFFF?text=Cimento',
+      'https://via.placeholder.com/300/737373/FFFFFF?text=Ferramentas'
     ],
     reviews: [
-      { rating: 4, comment: "Bons preços e entrega rápida.", author: "Cliente Anônimo" }
+      { rating: 4, comment: "Bons preços e entrega rápida.", author: "Pedro A." }
     ]
   }
 ];

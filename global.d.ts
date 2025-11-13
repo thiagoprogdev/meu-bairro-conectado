@@ -1,13 +1,10 @@
+// FIX: Updated type definitions for process.env to align with Vite's environment variable injection.
+// This provides correct TypeScript types for the shimmed process.env object.
 // Este arquivo é usado para declarar tipos globais para o TypeScript.
-// Ele corrige o erro "Cannot find type definition file for 'node'"
-// definindo manualmente o objeto `process` que o serviço Gemini usa.
+// Ele define o objeto `process.env` injetado pelo Vite para que o serviço Gemini possa usá-lo.
 
-declare namespace NodeJS {
-  interface ProcessEnv {
-    readonly API_KEY: string;
-  }
-}
-
-// FIX: Removed the `declare var process` block that was causing a redeclaration error.
-// The `process` variable is likely already typed by a dependency. Augmenting
-// `NodeJS.ProcessEnv` is sufficient to add types for environment variables.
+declare var process: {
+  env: {
+    API_KEY: string | undefined;
+  };
+};

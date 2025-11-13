@@ -1,13 +1,11 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import { Business } from '../types';
 import { businesses } from '../data/businesses';
+import { generateText } from '../services/geminiService';
 import ImageSlider from '../components/ImageSlider';
 import FeaturedCard from '../components/FeaturedCard';
 import ResultCard from '../components/ResultCard';
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const SearchIcon: React.FC = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -108,11 +106,6 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
     const [resultsSummary, setResultsSummary] = useState<string | null>(null);
     const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
     
-    const [showFilters, setShowFilters] = useState(false);
-    const [isOpenNow, setIsOpenNow] = useState(false);
-    const [promotionQuery, setPromotionQuery] = useState('');
-    const [minRating, setMinRating] = useState(0);
-
     const handleSearch = useCallback(async (searchQuery: string) => {
         if (!searchQuery) {
             setError('Por favor, digite o que você procura.');
@@ -146,10 +139,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
                 summaryPrompt = `Escreva um pequeno texto amigável dizendo que nenhum resultado foi encontrado para a busca "${searchQuery}", e sugira ao usuário tentar outros termos ou explorar as categorias.`;
             }
 
-            const response = await ai.models.generateContent({
-                model: "gemini-2.5-flash",
-                contents: summaryPrompt,
-            });
+            const response = await generateText(summaryPrompt);
             setResultsSummary(response.text);
 
         } catch (err) {
