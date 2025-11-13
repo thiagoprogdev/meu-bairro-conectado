@@ -17,9 +17,9 @@ export const businesses: Business[] = [
     },
     photos: [
       '/images/total-bazar/file1.jpg', 
-      '/images/total-bazar/file2.jpg',
-      '/images/total-bazar/file3.jpg',
-      '/images/total-bazar/file4.jpg'
+      '/images/total-bazar/file2.jpeg',
+      '/images/total-bazar/file3.jpeg',
+      '/images/total-bazar/file4.jpeg'
     ],
     reviews: [
       { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Maria S." },
