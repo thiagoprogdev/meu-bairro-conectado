@@ -16,10 +16,10 @@ export const businesses: Business[] = [
       facebook: 'https://facebook.com/totalbazar'
     },
     photos: [
-      '/images/total-bazar/file1.jpg',
+      '/images/total-bazar/file1.jpg', 
       '/images/total-bazar/file2.jpg',
       '/images/total-bazar/file3.jpg',
-      '/images/total-bazar/file4.jpg',
+      '/images/total-bazar/file4.jpg'
     ],
     reviews: [
       { rating: 5, comment: "Atendimento excelente e profissionais de alta qualidade. Recomendo!", author: "Maria S." },
@@ -65,6 +65,46 @@ export const businesses: Business[] = [
     ],
     reviews: [
       { rating: 4, comment: "Bons preços e entrega rápida.", author: "Pedro A." }
+    ]
+  },
+  {
+    id: 4,
+    name: 'Total Bazar',
+    category: 'Papelaria',
+    description: 'Sua papelaria e bazar completo no bairro! Encontre materiais escolares, de escritório, presentes, e uma grande variedade de utilidades para o lar. Preços competitivos e atendimento amigável.',
+    shortDescription: 'Papelaria, presentes e utilidades para o lar.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Total+Bazar'
+    },
+    contact: {
+      phone: '5511966665555',
+      instagram: 'https://instagram.com/totalbazar',
+    },
+    photos: [
+      '/images/total-bazar/file1.jpg',
+      '/images/total-bazar/file2.jpg',
+      '/images/total-bazar/file3.jpg',
+      '/images/total-bazar/file4.jpg'
+    ],
+    reviews: [
+      { rating: 5, comment: "Encontro de tudo lá, e o atendimento é ótimo!", author: "Ana L." }
+    ]
+  },
+  {
+    id: 5,
+    name: 'Canto do Pet',
+    category: 'Pet Shop',
+    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
+    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+    },
+    contact: {
+      phone: '5511955554444',
+    },
+    photos: [], // Lista vazia para testar o placeholder
+    reviews: [
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
     ]
   }
 ];
