@@ -1,20 +1,26 @@
 import React from 'react';
+import { Business } from '../types';
 
 interface FeaturedCardProps {
-  image: string;
-  title: string;
-  category: string;
+  business: Business;
+  onClick: () => void;
 }
 
-const FeaturedCard: React.FC<FeaturedCardProps> = ({ image, title, category }) => {
+const FeaturedCard: React.FC<FeaturedCardProps> = ({ business, onClick }) => {
+  const { name, category, photos } = business;
+  const image = photos && photos.length > 0 ? photos[0] : '/images/placeholder.jpg';
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
-      <img src={image} alt={title} className="w-full h-32 object-cover" />
+    <button 
+      onClick={onClick}
+      className="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 text-left w-full"
+    >
+      <img src={image} alt={name} className="w-full h-32 object-cover" />
       <div className="p-4">
-        <h3 className="font-bold text-lg text-gray-800">{title}</h3>
+        <h3 className="font-bold text-lg text-gray-800 truncate" title={name}>{name}</h3>
         <p className="text-sm text-gray-500">{category}</p>
       </div>
-    </div>
+    </button>
   );
 };
 
