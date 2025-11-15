@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { categories } from '../data/categories';
+import { categories } from '../data/categories.ts';
 
 type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help';
 interface HeaderProps {

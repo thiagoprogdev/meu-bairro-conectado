@@ -28,23 +28,26 @@ export const businesses: Business[] = [
   },
   {
     id: 2,
-    name: 'Lanche Feliz',
-    category: 'Lanchonete',
-    description: 'Os melhores hambúrgueres artesanais da região! Usamos ingredientes frescos e selecionados para garantir um sabor inesquecível. Temos opções vegetarianas e um cardápio variado de porções e bebidas. Perfeito para um happy hour ou um lanche em família.',
-    shortDescription: 'Hambúrgueres artesanais, porções e bebidas.',
+    name: 'Açaí Grumari',
+    category: 'Açaiteria',
+    description: 'Fundada desde 2011, a empresa Açaí Grumari, vem atuando com foco e determinação no ramo de produtos alimentícios, tendo como em sua base a excelência na qualidade, através de processos modernos e de total higiene.',
+    shortDescription: 'Açai e sorvetes.',
     location: {
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Lanche+Feliz'
+      mapsUrl: 'https://maps.app.goo.gl/ZcFcMK8AGJT7wtPu6'
     },
     contact: {
-      phone: '5511988887777',
-      instagram: 'https://instagram.com/lanchefeliz',
+      phone: '5521983135924',
+      instagram: 'https://www.instagram.com/acaigrumari',
+      facebook: 'https://www.facebook.com/acaigrumari/'
     },
     photos: [
-      'https://via.placeholder.com/300/f59e0b/FFFFFF?text=Burger+Duplo',
-      'https://via.placeholder.com/300/fbbf24/FFFFFF?text=Batata+Frita',
+      '/images/acai-grumari/logo.jpg', 
+      '/images/acai-grumari/file1.jpg',
+      '/images/acai-grumari/file2.jpg',
+      '/images/acai-grumari/file3.jpg'
     ],
     reviews: [
-      { rating: 5, comment: "O melhor hambúrguer que já comi! Atendimento rápido.", author: "Carlos R." }
+      { rating: 5, comment: "O melhor açaí que já tomei na minha vida.", author: "Carlos R." }
     ]
   },
    {

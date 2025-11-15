@@ -7,5 +7,6 @@ export const categories: string[] = [
   'Mercado',
   'Farmácia',
   'Restaurante',
-  'Academia'
+  'Academia',
+  'Açaiteria'
 ];
