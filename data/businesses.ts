@@ -54,8 +54,8 @@ export const businesses: Business[] = [
     id: 3,
     name: 'Fornini pizzaria',
     category: 'Pizzaria',
-    description: 'Tudo para sua obra, do básico ao acabamento. Oferecemos uma vasta gama de produtos, como cimento, areia, tijolos, pisos, tintas e ferramentas. Conte com nosso atendimento especializado para ajudar em seu projeto.',
-    shortDescription: 'Tudo para sua obra, do básico ao acabamento.',
+    description: 'Pizzaria tradicional com uma variedade de sabores e ingredientes frescos. Ambiente acolhedor e atendimento de qualidade.',
+    shortDescription: 'Pizzas artesanais e delivery rápido.',
     location: {
       mapsUrl: 'https://maps.app.goo.gl/Rh29inHmwEdQNin89'
     },
@@ -63,7 +63,7 @@ export const businesses: Business[] = [
       phone: '5521999055637',
     },
     photos: [
-      '/images/fornini/logo.png',
+      '/images/fornini/logofornini.png',
       '/images/fornini/file1.png',
       '/images/fornini/file2.jpg',
       '/images/fornini/file3.png'
