@@ -13,14 +13,14 @@ const SearchIcon: React.FC = () => (
 );
 
 const featuredData = [
-    { image: '/images/destaque/logoacai.jpg', title: 'Açaí Grumari', category: 'Açaiteria' },
-    { image: '/images/destaque/file1.jpg', title: 'Total Bazar Matreial de Construção', category: 'Material de Construção' },
-    { image: '/images/destaque/luz da alvorada.jpg', title: 'Restaurante Luz da alvorada', category: 'Restaurante' },
-    { image: '/images/destaque-lanchonete.jpg', title: 'Lanche Feliz', category: 'Lanchonete' },
-    { image: '/images/destaque-petshop.jpg', title: 'Pet Alegria', category: 'Pet Shop' },
-    { image: '/images/destaque-mercado.jpg', title: 'Mercado da Vila', category: 'Mercado' },
-    { image: '/images/destaque-farmacia.jpg', title: 'Drogaria Saúde', category: 'Farmácia' },
-    { image: '/images/destaque-restaurante.jpg', title: 'Cantina Italiana', category: 'Restaurante' },
+    { image: '/images/destaques/logoacai.jpg', title: 'Açaí Grumari', category: 'Açaiteria' },
+    { image: '/images/destaques/file1.jpg', title: 'Total Bazar Matreial de Construção', category: 'Material de Construção' },
+    { image: '/images/destaques/luz da alvorada.jpg', title: 'Restaurante Luz da alvorada', category: 'Restaurante' },
+    { image: '/images/destaques/logofornini.png', title: 'Fornini pizzaria', category: 'Pizzaria' },
+    { image: '/images/destaques/petshop.jpg', title: 'Pet Alegria', category: 'Pet Shop' },
+    { image: '/images/destaques/mercado.jpg', title: 'Mercado da Vila', category: 'Mercado' },
+    { image: '/images/destaques/farmacia.jpg', title: 'Drogaria Saúde', category: 'Farmácia' },
+    { image: '/images/destaques/restaurante.jpg', title: 'Cantina Italiana', category: 'Restaurante' },
 ];
 
 
