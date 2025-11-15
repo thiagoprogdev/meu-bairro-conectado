@@ -13,9 +13,9 @@ const SearchIcon: React.FC = () => (
 );
 
 const featuredData = [
-    { image: '/images/destaque-salao.jpg', title: 'Salão Moderno', category: 'Salão de Beleza' },
-    { image: '/images/destaque-construcao.jpg', title: 'ConstroiJá', category: 'Material de Construção' },
-    { image: '/images/destaque-papelaria.jpg', title: 'Papel & Caneta', category: 'Papelaria' },
+    { image: '/images/destaque/logoacai.jpg', title: 'Açaí Grumari', category: 'Açaiteria' },
+    { image: '/images/destaque/file1.jpg', title: 'Total Bazar Matreial de Construção', category: 'Material de Construção' },
+    { image: '/images/destaque/luz da alvorada.jpg', title: 'Restaurante Luz da alvorada', category: 'Restaurante' },
     { image: '/images/destaque-lanchonete.jpg', title: 'Lanche Feliz', category: 'Lanchonete' },
     { image: '/images/destaque-petshop.jpg', title: 'Pet Alegria', category: 'Pet Shop' },
     { image: '/images/destaque-mercado.jpg', title: 'Mercado da Vila', category: 'Mercado' },
