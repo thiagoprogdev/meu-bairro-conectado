@@ -1,12 +1,13 @@
 export const categories: string[] = [
-  'Salão de Beleza',
-  'Material de Construção',
-  'Papelaria',
-  'Lanchonete',
-  'Pet Shop',
-  'Mercado',
-  'Farmácia',
-  'Restaurante',
-  'Academia',
-  'Açaiteria'
+'Academia',
+'Açaiteria',
+'Farmácia',
+'Lanchonete',
+'Material de Construção',
+'Mercado',
+'Papelaria',
+'Pet Shop',
+'Restaurante',
+'Salão de Beleza',
+
 ];

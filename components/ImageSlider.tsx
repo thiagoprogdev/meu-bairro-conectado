@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 const slides = [
     { url: '/images/slide/luz da alvorada.jpg', alt: 'Restaurante Luz da Alvorada' },
     { url: '/images/slide/file1.jpg', alt: 'Total bazar material de construção' },
+    { url: '/images/slide/logoacai.jpg', alt: 'Açaí Grumari' },
 ];
 
 const ImageSlider: React.FC = () => {
