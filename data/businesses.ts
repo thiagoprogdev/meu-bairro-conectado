@@ -52,19 +52,21 @@ export const businesses: Business[] = [
   },
    {
     id: 3,
-    name: 'ConstroiJá',
-    category: 'Material de Construção',
+    name: 'Fornini pizzaria',
+    category: 'Pizzaria',
     description: 'Tudo para sua obra, do básico ao acabamento. Oferecemos uma vasta gama de produtos, como cimento, areia, tijolos, pisos, tintas e ferramentas. Conte com nosso atendimento especializado para ajudar em seu projeto.',
     shortDescription: 'Tudo para sua obra, do básico ao acabamento.',
     location: {
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=ConstroiJá'
+      mapsUrl: 'https://maps.app.goo.gl/Rh29inHmwEdQNin89'
     },
     contact: {
-      phone: '5511977776666',
+      phone: '5521999055637',
     },
     photos: [
-      'https://via.placeholder.com/300/a3a3a3/FFFFFF?text=Cimento',
-      'https://via.placeholder.com/300/737373/FFFFFF?text=Ferramentas'
+      '/images/fornini/logo.png',
+      '/images/fornini/file1.png',
+      '/images/fornini/file2.jpg',
+      '/images/fornini/file3.png'
     ],
     reviews: [
       { rating: 4, comment: "Bons preços e entrega rápida.", author: "Pedro A." }
