@@ -22,6 +22,7 @@ const NotificationPreferences: React.FC = () => {
         construcao: 'Material de Construção',
         papelaria: 'Papelaria',
         lanchonete: 'Lanchonete',
+        outro : 'Outros'
     };
     const [subscriptions, setSubscriptions] = useState<string[]>([]);
     const [notificationPermission, setNotificationPermission] = useState(Notification.permission);

@@ -111,5 +111,90 @@ export const businesses: Business[] = [
     reviews: [
       { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
     ]
+  },
+  {
+    id: 6,
+    name: 'Canto do Pet',
+    category: 'Pet Shop',
+    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
+    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+    },
+    contact: {
+      phone: '5511955554444',
+    },
+    photos: [], // Lista vazia para testar o placeholder
+    reviews: [
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+    ]
+  },
+  {
+    id: 7,
+    name: 'Canto do Pet',
+    category: 'Pet Shop',
+    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
+    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+    },
+    contact: {
+      phone: '5511955554444',
+    },
+    photos: [], // Lista vazia para testar o placeholder
+    reviews: [
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+    ]
+  },
+  {
+    id: 8,
+    name: 'Canto do Pet',
+    category: 'Pet Shop',
+    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
+    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+    },
+    contact: {
+      phone: '5511955554444',
+    },
+    photos: [], // Lista vazia para testar o placeholder
+    reviews: [
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+    ]
+  },
+  {
+    id: 9,
+    name: 'Canto do Pet',
+    category: 'Pet Shop',
+    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
+    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+    },
+    contact: {
+      phone: '5511955554444',
+    },
+    photos: [], // Lista vazia para testar o placeholder
+    reviews: [
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+    ]
+  },
+  {
+    id: 10,
+    name: 'Canto do Pet',
+    category: 'Pet Shop',
+    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
+    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    location: {
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+    },
+    contact: {
+      phone: '5511955554444',
+    },
+    photos: [], // Lista vazia para testar o placeholder
+    reviews: [
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+    ]
   }
 ];
