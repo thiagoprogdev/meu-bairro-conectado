@@ -93,6 +93,11 @@ const App: React.FC = () => {
     setCurrentPage('home');
   };
 
+  const navigateHome = () => {
+    setCurrentPage('home');
+    setInitialSearchQuery('');
+  };
+
   const handleViewDetails = (business: Business) => {
     setSelectedBusiness(business);
     setIsModalOpen(true);
@@ -120,7 +125,12 @@ const App: React.FC = () => {
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
       {notification && <NotificationToast notification={notification} onClose={() => setNotification(null)} />}
-      <Header currentPage={currentPage} setCurrentPage={setCurrentPage} onCategorySelect={handleCategorySearch} />
+      <Header 
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage} 
+        onCategorySelect={handleCategorySearch} 
+        onNavigateHome={navigateHome}
+      />
       <main className="p-4 md:p-8">
         {renderPage()}
       </main>

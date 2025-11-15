@@ -13,14 +13,14 @@ const SearchIcon: React.FC = () => (
 );
 
 const featuredData = [
-    { image: 'https://via.placeholder.com/300x200/16a34a/FFFFFF?text=Salão+Moderno', title: 'Salão Moderno', category: 'Salão de Beleza' },
-    { image: 'https://via.placeholder.com/300x200/f59e0b/FFFFFF?text=ConstroiJá', title: 'ConstroiJá', category: 'Material de Construção' },
-    { image: 'https://via.placeholder.com/300x200/84cc16/FFFFFF?text=Papel+e+Caneta', title: 'Papel & Caneta', category: 'Papelaria' },
-    { image: 'https://via.placeholder.com/300x200/4d7c0f/FFFFFF?text=Lanche+Feliz', title: 'Lanche Feliz', category: 'Lanchonete' },
-    { image: 'https://via.placeholder.com/300x200/166534/FFFFFF?text=Pet+Alegria', title: 'Pet Alegria', category: 'Pet Shop' },
-    { image: 'https://via.placeholder.com/300x200/16a34a/FFFFFF?text=Mercado+da+Vila', title: 'Mercado da Vila', category: 'Mercado' },
-    { image: 'https://via.placeholder.com/300x200/f59e0b/FFFFFF?text=Drogaria+Saúde', title: 'Drogaria Saúde', category: 'Farmácia' },
-    { image: 'https://via.placeholder.com/300x200/84cc16/FFFFFF?text=Cantina+Italiana', title: 'Cantina Italiana', category: 'Restaurante' },
+    { image: '/images/destaque-salao.jpg', title: 'Salão Moderno', category: 'Salão de Beleza' },
+    { image: '/images/destaque-construcao.jpg', title: 'ConstroiJá', category: 'Material de Construção' },
+    { image: '/images/destaque-papelaria.jpg', title: 'Papel & Caneta', category: 'Papelaria' },
+    { image: '/images/destaque-lanchonete.jpg', title: 'Lanche Feliz', category: 'Lanchonete' },
+    { image: '/images/destaque-petshop.jpg', title: 'Pet Alegria', category: 'Pet Shop' },
+    { image: '/images/destaque-mercado.jpg', title: 'Mercado da Vila', category: 'Mercado' },
+    { image: '/images/destaque-farmacia.jpg', title: 'Drogaria Saúde', category: 'Farmácia' },
+    { image: '/images/destaque-restaurante.jpg', title: 'Cantina Italiana', category: 'Restaurante' },
 ];
 
 
@@ -94,7 +94,7 @@ const NotificationPreferences: React.FC = () => {
 };
 
 interface HomePageProps {
-    initialQuery?: string;
+    initialQuery: string;
     onViewDetails: (business: Business) => void;
 }
 
@@ -153,6 +153,13 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
         if (initialQuery) {
             setQuery(initialQuery);
             handleSearch(initialQuery);
+        } else {
+            // Reset state when navigating home without a query
+            setQuery('');
+            setError(null);
+            setResultsSummary(null);
+            setFilteredBusinesses([]);
+            setLoading(false);
         }
     }, [initialQuery, handleSearch]);
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { categories } from '../data/categories';
 
 const BusinessAdminPage: React.FC = () => {
 
@@ -51,15 +52,9 @@ const BusinessAdminPage: React.FC = () => {
                                 <label htmlFor="category" className="block text-sm font-medium text-gray-700">Categoria</label>
                                 <select id="category" name="category" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
                                     <option value="">Selecione uma categoria</option>
-                                    <option value="Salão de Beleza">Salão de Beleza</option>
-                                    <option value="Material de Construção">Material de Construção</option>
-                                    <option value="Papelaria">Papelaria</option>
-                                    <option value="Lanchonete">Lanchonete</option>
-                                    <option value="Pet Shop">Pet Shop</option>
-                                    <option value="Mercado">Mercado</option>
-                                    <option value="Farmácia">Farmácia</option>
-                                    <option value="Restaurante">Restaurante</option>
-                                    <option value="Academia">Academia</option>
+                                    {categories.map(category => (
+                                      <option key={category} value={category}>{category}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

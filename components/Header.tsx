@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { categories } from '../data/categories';
 
 type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help';
 interface HeaderProps {
     currentPage: string;
     setCurrentPage: (page: Page) => void;
     onCategorySelect: (category: string) => void;
+    onNavigateHome: () => void;
 }
 
 const Logo: React.FC = () => (
@@ -17,20 +19,7 @@ const Logo: React.FC = () => (
     </div>
 );
 
-const categories = [
-    'Salão de Beleza', 
-    'Material de Construção', 
-    'Papelaria', 
-    'Lanchonete',
-    'Pet Shop',
-    'Mercado',
-    'Farmácia',
-    'Restaurante',
-    'Academia',
-];
-
-
-const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategorySelect }) => {
+const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategorySelect, onNavigateHome }) => {
     const navItemClasses = "py-2 px-3 rounded-md text-sm font-medium transition-colors";
     const activeClasses = "bg-green-900 text-white";
     const inactiveClasses = "text-green-100 hover:bg-green-700 hover:text-white";
@@ -60,13 +49,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategory
             <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
-                        <button onClick={() => setCurrentPage('home')}>
+                        <button onClick={onNavigateHome}>
                             <Logo />
                         </button>
                     </div>
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-4">
-                            <button onClick={() => setCurrentPage('home')} className={`${navItemClasses} ${currentPage === 'home' ? activeClasses : inactiveClasses}`}>
+                            <button onClick={onNavigateHome} className={`${navItemClasses} ${currentPage === 'home' ? activeClasses : inactiveClasses}`}>
                                 Início
                             </button>
                              <div className="relative" ref={dropdownRef}>
