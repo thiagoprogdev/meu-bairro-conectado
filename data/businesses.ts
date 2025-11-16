@@ -74,25 +74,31 @@ export const businesses: Business[] = [
   },
   {
     id: 4,
-    name: 'Total Bazar',
-    category: 'Papelaria',
-    description: 'Sua papelaria e bazar completo no bairro! Encontre materiais escolares, de escritório, presentes, e uma grande variedade de utilidades para o lar. Preços competitivos e atendimento amigável.',
-    shortDescription: 'Papelaria, presentes e utilidades para o lar.',
+    name: 'Vânia Marques confeitaria',
+    category: 'Bolos e doces',
+    description: 'Trabalhamos com bolos para festas e caseiros, doces, kit festa, bolo fatia e muito mais.',
+    shortDescription: 'Bolos e doces para todas as ocasiões.',
     location: {
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Total+Bazar'
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Vânia+Marques+confeitaria'
     },
     contact: {
-      phone: '5511966665555',
-      instagram: 'https://instagram.com/totalbazar',
+      phone: '5521984461269',
+      instagram: 'https://instagram.com/marquesconft',
     },
     photos: [
-      '/images/total-bazar/file1.jpg',
-      '/images/total-bazar/file2.jpg',
-      '/images/total-bazar/file3.jpg',
-      '/images/total-bazar/file4.jpg'
+      '/images/vaniamarquesconfeitaria/logovania.jpeg',
+      '/images/vaniamarquesconfeitaria/file1.jpeg',
+      '/images/vaniamarquesconfeitaria/file2.jpeg',
+      '/images/vaniamarquesconfeitaria/file3.jpeg',
+      '/images/vaniamarquesconfeitaria/file4.jpeg',
+      '/images/vaniamarquesconfeitaria/file5.jpeg',
+      '/images/vaniamarquesconfeitaria/file6.jpeg',
+      '/images/vaniamarquesconfeitaria/file7.jpeg',
+      '/images/vaniamarquesconfeitaria/file8.jpeg',
+      '/images/vaniamarquesconfeitaria/file9.jpeg'
     ],
     reviews: [
-      { rating: 5, comment: "Encontro de tudo lá, e o atendimento é ótimo!", author: "Ana L." }
+      { rating: 5, comment: "Que bolo maravilhoso, super recomendo!", author: "Ana L." }
     ]
   },
   {
