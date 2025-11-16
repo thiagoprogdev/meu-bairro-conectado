@@ -1,12 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const HelpPage: React.FC = () => {
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        alert('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.');
-        // Here you would typically handle form submission, e.g., send data to an API
-        (event.target as HTMLFormElement).reset();
+        setIsLoading(true);
+
+        const formData = new FormData(event.currentTarget);
+        const contactData = {
+            formType: 'Help Contact Form',
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            message: formData.get('message'),
+            attachment: (formData.get('file-upload') as File)?.name || 'No attachment'
+        };
+        
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(contactData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            alert('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.');
+            event.currentTarget.reset();
+
+        } catch (error) {
+            console.error('Failed to submit form:', error);
+            alert('Houve um erro ao enviar sua mensagem. Por favor, tente novamente.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
 
@@ -19,19 +51,19 @@ const HelpPage: React.FC = () => {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome Completo</label>
-                        <input type="text" id="name" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
+                        <input type="text" id="name" name="name" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
                     </div>
                      <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">E-mail</label>
-                        <input type="email" id="email" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
+                        <input type="email" id="email" name="email" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
                     </div>
                      <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Telefone para Contato</label>
-                        <input type="tel" id="phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
+                        <input type="tel" id="phone" name="phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
                     </div>
                     <div>
                         <label htmlFor="message" className="block text-sm font-medium text-gray-700">Sua Mensagem</label>
-                        <textarea id="message" rows={5} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"></textarea>
+                        <textarea id="message" name="message" rows={5} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"></textarea>
                     </div>
                     <div>
                         <label htmlFor="attachment" className="block text-sm font-medium text-gray-700">Anexar Imagem (opcional)</label>
@@ -52,8 +84,12 @@ const HelpPage: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex justify-end">
-                         <button type="submit" className="bg-green-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-lg">
-                            Enviar Mensagem
+                         <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="bg-green-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            {isLoading ? 'Enviando...' : 'Enviar Mensagem'}
                         </button>
                     </div>
                 </form>

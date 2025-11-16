@@ -85,7 +85,10 @@ export const getChatResponse = async (history: ChatMessage[], newMessage: string
             history: history.map(msg => ({
                 role: msg.role,
                 parts: [{ text: msg.content }]
-            }))
+            })),
+            config: {
+                systemInstruction: `Você é o assistente virtual do site "Meu Bairro Conectado". Sua principal função é ajudar os usuários a encontrar informações sobre os estabelecimentos locais, navegar pelas funcionalidades do site e entender os planos disponíveis. Você SÓ PODE responder a perguntas relacionadas ao "Meu Bairro Conectado". Se o usuário perguntar sobre qualquer outro assunto (história, ciência, notícias, etc.), recuse educadamente a resposta e reforce que sua especialidade é o site.`,
+            }
         });
 
         const responseStream = await chat.sendMessageStream({ message: newMessage });

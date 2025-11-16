@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { categories } from '../data/categories';
 
 const BusinessAdminPage: React.FC = () => {
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleRegistrationSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleRegistrationSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoading(true);
         
         const formData = new FormData(event.currentTarget);
         const businessData = {
+            formType: 'Business Registration',
             name: formData.get('businessName'),
             category: formData.get('category'),
             description: formData.get('description'),
@@ -17,19 +20,28 @@ const BusinessAdminPage: React.FC = () => {
             files: (formData.get('file-upload') as File)?.name ? 'Arquivos selecionados' : 'Nenhum arquivo selecionado'
         };
 
-        // 1. Simulate sending the email by logging to the console
-        console.log("--- SIMULAÇÃO DE ENVIO DE E-MAIL ---");
-        console.log("Para: thiagoanalista.estacio@gmail.com");
-        console.log("Assunto: Novo Cadastro de Estabelecimento Recebido");
-        console.log("Corpo do E-mail (Dados do Formulário):");
-        console.log(JSON.stringify(businessData, null, 2));
-        console.log("--------------------------------------");
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(businessData),
+            });
 
-        // 2. Alert the user
-        alert('Cadastro enviado com sucesso! Nossa equipe recebeu seus dados e entrará em contato em breve para acordar o pagamento e ativar seu perfil.');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            alert('Cadastro enviado com sucesso! Nossa equipe recebeu seus dados e entrará em contato em breve para acordar o pagamento e ativar seu perfil.');
+            event.currentTarget.reset();
 
-        // 3. Reset the form
-        event.currentTarget.reset();
+        } catch (error) {
+            console.error('Failed to submit form:', error);
+            alert('Houve um erro ao enviar seu cadastro. Por favor, tente novamente.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
 
@@ -104,8 +116,12 @@ const BusinessAdminPage: React.FC = () => {
                     </div>
                     
                     <div className="flex justify-end pt-6">
-                        <button type="submit" className="bg-green-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-lg">
-                            Enviar Cadastro para Análise
+                        <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="bg-green-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            {isLoading ? 'Enviando...' : 'Enviar Cadastro para Análise'}
                         </button>
                     </div>
                 </form>

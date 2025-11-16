@@ -97,7 +97,7 @@ export const businesses: Business[] = [
   },
   {
     id: 5,
-    name: 'Canto do Pet',
+    name: 'Sua empresa aqui',
     category: 'Pet Shop',
     description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
     shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
@@ -114,7 +114,7 @@ export const businesses: Business[] = [
   },
   {
     id: 6,
-    name: 'Canto do Pet',
+    name: 'Sua empresa aqui',
     category: 'Pet Shop',
     description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
     shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
@@ -131,7 +131,7 @@ export const businesses: Business[] = [
   },
   {
     id: 7,
-    name: 'Canto do Pet',
+    name: 'Sua empresa aqui',
     category: 'Pet Shop',
     description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
     shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
@@ -148,7 +148,7 @@ export const businesses: Business[] = [
   },
   {
     id: 8,
-    name: 'Canto do Pet',
+    name: 'Sua empresa aqui',
     category: 'Pet Shop',
     description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
     shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
@@ -165,7 +165,7 @@ export const businesses: Business[] = [
   },
   {
     id: 9,
-    name: 'Canto do Pet',
+    name: 'Sua empresa aqui',
     category: 'Pet Shop',
     description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
     shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
@@ -182,7 +182,7 @@ export const businesses: Business[] = [
   },
   {
     id: 10,
-    name: 'Canto do Pet',
+    name: 'Sua empresa aqui',
     category: 'Pet Shop',
     description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
     shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',

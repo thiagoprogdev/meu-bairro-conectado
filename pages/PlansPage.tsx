@@ -48,17 +48,18 @@ const PlansPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <PlanCard
                     title="Básico"
-                    price="R$ 19,90"
+                    price="R$ 14,99"
                     features={[
                         'Página de perfil completa',
                         'Cadastro em 1 categoria',
                         'Até 5 fotos na galeria',
-                        'Link para redes sociais'
+                        'Link para redes sociais',
+                        'Gerador de cupons de desconto'
                     ]}
                 />
                  <PlanCard
                     title="Destaque"
-                    price="R$ 39,90"
+                    price="R$ 34,99"
                     features={[
                         'Todos os benefícios do Básico',
                         'Cadastro em até 3 categorias',
@@ -70,7 +71,7 @@ const PlansPage: React.FC = () => {
                 />
                  <PlanCard
                     title="Premium"
-                    price="R$ 59,90"
+                    price="R$ 49,99"
                     features={[
                         'Todos os benefícios do Destaque',
                         'Cadastro em categorias ilimitadas',
