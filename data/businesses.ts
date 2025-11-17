@@ -113,9 +113,15 @@ export const businesses: Business[] = [
     contact: {
       phone: '5521992644990',
     },
-    photos: [], // Lista vazia para testar o placeholder
+    photos: [
+      '/images/luz-da-alvorada/logoluzdaalvorada.jpeg',
+      '/images/luz-da-alvorada/file1.jpeg',
+      '/images/luz-da-alvorada/file2.jpeg',
+      '/images/luz-da-alvorada/file3.jpeg',
+      '/images/luz-da-alvorada/file4.jpeg'
+    ],
     reviews: [
-      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+      { rating: 5, comment: "Melhor selfie service da região e ainda vem com sembremesa!", author: "Lucas M." }
     ]
   },
   {
@@ -130,16 +136,9 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
-    photos: [
-      '/images/luz-da-alvorada/logoluzdaalvorada.jpeg',
-      '/images/luz-da-alvorada/file1.jpeg',
-      '/images/luz-da-alvorada/file2.jpeg',
-      '/images/luz-da-alvorada/file3.jpeg',
-      '/images/luz-da-alvorada/file4.jpeg'
-
-    ],
+    photos: [], // Lista vazia para testar o placeholder
     reviews: [
-      { rating: 5, comment: "Melhor selfie service da região e ainda vem com sembremesa!", author: "Lucas M." }
+      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
     ]
   },
   {
