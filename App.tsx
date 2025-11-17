@@ -6,13 +6,14 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import AboutPage from './pages/AboutPage';
 import PlansPage from './pages/PlansPage';
 import HelpPage from './pages/HelpPage';
+import CategoriesPage from './pages/CategoriesPage'; // Import new page
 import Chatbot from './components/Chatbot';
 import BusinessDetailModal from './components/BusinessDetailModal';
 import { Business } from './types';
-import { trackPageView, trackEvent } from './services/analytics.ts';
+import { trackPageView, trackEvent } from './services/analytics';
 
 
-type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help';
+type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories'; // Add 'categories'
 
 interface NotificationPayload {
     title: string;
@@ -53,7 +54,7 @@ const NotificationToast: React.FC<{ notification: NotificationPayload; onClose: 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [notification, setNotification] = useState<NotificationPayload | null>(null);
-  const [initialSearchQuery, setInitialSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(''); // New state for category page
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
@@ -67,12 +68,16 @@ const App: React.FC = () => {
       about: { path: '/quem-somos', title: 'Quem Somos' },
       plans: { path: '/planos', title: 'Planos' },
       help: { path: '/ajuda', title: 'Ajuda' },
+      categories: { path: '/categorias', title: 'Categorias' }, // Add categories page
     };
     const pageInfo = pageMap[currentPage];
     if (pageInfo) {
-      trackPageView(pageInfo.path, pageInfo.title);
+      // For categories, add the specific category to the path for better tracking
+      const path = currentPage === 'categories' && selectedCategory ? `${pageInfo.path}/${selectedCategory}` : pageInfo.path;
+      const title = currentPage === 'categories' && selectedCategory ? `${selectedCategory} - ${pageInfo.title}` : pageInfo.title;
+      trackPageView(path, title);
     }
-  }, [currentPage]);
+  }, [currentPage, selectedCategory]);
 
 
   useEffect(() => {
@@ -106,15 +111,20 @@ const App: React.FC = () => {
   }, []);
 
   const handleCategorySearch = (category: string) => {
-    setInitialSearchQuery(category);
-    setCurrentPage('home');
+    setSelectedCategory(category);
+    setCurrentPage('categories');
     // Rastreia a busca por categoria no Google Analytics
     trackEvent('search', { search_term: category });
   };
 
+  const handleNavigateToCategories = () => {
+      setSelectedCategory('');
+      setCurrentPage('categories');
+  };
+
   const navigateHome = () => {
     setCurrentPage('home');
-    setInitialSearchQuery('');
+    setSelectedCategory('');
   };
 
   const handleViewDetails = (business: Business) => {
@@ -125,7 +135,9 @@ const App: React.FC = () => {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage initialQuery={initialSearchQuery} onViewDetails={handleViewDetails} />;
+        return <HomePage onViewDetails={handleViewDetails} />;
+      case 'categories':
+        return <CategoriesPage initialCategory={selectedCategory} onViewDetails={handleViewDetails} onSelectCategory={setSelectedCategory} />;
       case 'business':
         return <BusinessAdminPage />;
       case 'admin':
@@ -137,7 +149,7 @@ const App: React.FC = () => {
       case 'help':
         return <HelpPage />;
       default:
-        return <HomePage initialQuery={initialSearchQuery} onViewDetails={handleViewDetails} />;
+        return <HomePage onViewDetails={handleViewDetails} />;
     }
   };
 
@@ -147,7 +159,8 @@ const App: React.FC = () => {
       <Header 
         currentPage={currentPage} 
         setCurrentPage={setCurrentPage} 
-        onCategorySelect={handleCategorySearch} 
+        onCategorySelect={handleCategorySearch}
+        onNavigateToCategories={handleNavigateToCategories} 
         onNavigateHome={navigateHome}
       />
       <main className="p-4 md:p-8">

@@ -86,38 +86,23 @@ const NotificationPreferences: React.FC = () => {
 };
 
 interface HomePageProps {
-    initialQuery: string;
     onViewDetails: (business: Business) => void;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
-    const [query, setQuery] = useState(''); // Controla o valor do campo de input
-    const [searchTerm, setSearchTerm] = useState(''); // Controla o termo que de fato aciona a busca
+const HomePage: React.FC<HomePageProps> = ({ onViewDetails }) => {
+    const [query, setQuery] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [resultsSummary, setResultsSummary] = useState<string | null>(null);
     const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
     
-    // Efeito 1: Sincroniza o estado interno quando uma categoria é selecionada externamente (via props).
-    useEffect(() => {
-        if (initialQuery) {
-            setQuery(initialQuery);
-            setSearchTerm(initialQuery); // Aciona o efeito de busca
-        } else {
-             // Limpa tudo ao navegar para home sem uma busca específica
-            setQuery('');
-            setSearchTerm('');
-            setError(null);
-            setResultsSummary(null);
-            setFilteredBusinesses([]);
-        }
-    }, [initialQuery]);
-
-    // Efeito 2: Executa a busca sempre que `searchTerm` for alterado.
+    // Efeito para executar a busca
     useEffect(() => {
         const executeSearch = async () => {
             if (!searchTerm) {
-                 // Se o termo de busca está vazio, não faz nada. Os resultados já foram limpos pelo Efeito 1.
+                setResultsSummary(null);
+                setFilteredBusinesses([]);
                 return;
             }
             
@@ -161,14 +146,14 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
         };
 
         executeSearch();
-    }, [searchTerm]); // Este efeito depende apenas do termo de busca final.
+    }, [searchTerm]);
 
     const handleManualSearch = () => {
         if (!query) {
             setError('Por favor, digite o que você procura.');
             return;
         }
-        setSearchTerm(query); // Aciona o efeito de busca com o conteúdo do input.
+        setSearchTerm(query);
     };
 
     return (
@@ -236,7 +221,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
                 </div>
             )}
             
-            {!resultsSummary && !loading && (
+            {!searchTerm && !loading && (
                  <div className="mb-8">
                      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Destaques</h2>
                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
