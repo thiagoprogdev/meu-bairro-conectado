@@ -110,13 +110,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const handleCategorySearch = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentPage('categories');
-    // Rastreia a busca por categoria no Google Analytics
-    trackEvent('search', { search_term: category });
-  };
-
   const handleNavigateToCategories = () => {
       setSelectedCategory('');
       setCurrentPage('categories');
@@ -130,6 +123,12 @@ const App: React.FC = () => {
   const handleViewDetails = (business: Business) => {
     setSelectedBusiness(business);
     setIsModalOpen(true);
+    // Rastreia a visualização do detalhe da empresa no Google Analytics
+    trackEvent('view_item', {
+        item_id: business.id,
+        item_name: business.name,
+        item_category: business.category,
+    });
   }
 
   const renderPage = () => {
@@ -158,8 +157,7 @@ const App: React.FC = () => {
       {notification && <NotificationToast notification={notification} onClose={() => setNotification(null)} />}
       <Header 
         currentPage={currentPage} 
-        setCurrentPage={setCurrentPage} 
-        onCategorySelect={handleCategorySearch}
+        setCurrentPage={setCurrentPage}
         onNavigateToCategories={handleNavigateToCategories} 
         onNavigateHome={navigateHome}
       />

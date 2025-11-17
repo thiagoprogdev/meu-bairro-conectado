@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { categories } from '../data/categories';
 
 type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories';
 interface HeaderProps {
     currentPage: string;
     setCurrentPage: (page: Page) => void;
-    onCategorySelect: (category: string) => void;
     onNavigateHome: () => void;
     onNavigateToCategories: () => void;
 }
@@ -20,27 +18,20 @@ const Logo: React.FC = () => (
     </div>
 );
 
-const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategorySelect, onNavigateHome, onNavigateToCategories }) => {
+const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onNavigateHome, onNavigateToCategories }) => {
     const navItemClasses = "py-2 px-3 rounded-md text-sm font-medium transition-colors";
     const mobileNavItemClasses = "block px-3 py-2 rounded-md text-base font-medium";
     const activeClasses = "bg-green-900 text-white";
     const inactiveClasses = "text-green-100 hover:bg-green-700 hover:text-white";
     
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isMobileCategoryOpen, setIsMobileCategoryOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
     const headerRef = useRef<HTMLElement>(null);
 
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsDropdownOpen(false);
-            }
             if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
                 setIsMobileMenuOpen(false);
-                setIsMobileCategoryOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -48,24 +39,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategory
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-
-    const handleCategoryClick = (category: string) => {
-        onCategorySelect(category);
-        setIsDropdownOpen(false);
-        setIsMobileCategoryOpen(false);
-        setIsMobileMenuOpen(false);
-    }
     
     const handleMobileLinkClick = (page: Page) => {
         setCurrentPage(page);
         setIsMobileMenuOpen(false);
-        setIsMobileCategoryOpen(false);
-    }
-    
-    const handleMobileHomeClick = () => {
-        onNavigateHome();
-        setIsMobileMenuOpen(false);
-        setIsMobileCategoryOpen(false);
     }
 
     return (
@@ -83,43 +60,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategory
                             <button onClick={onNavigateHome} className={`${navItemClasses} ${currentPage === 'home' ? activeClasses : inactiveClasses}`}>
                                 Início
                             </button>
-                             <div className="relative" ref={dropdownRef}>
-                                <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className={`${navItemClasses} ${currentPage === 'categories' ? activeClasses : inactiveClasses}`}>
-                                    Categorias
-                                </button>
-                                {isDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
-                                        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                            <a
-                                              href="#"
-                                              onClick={(e) => {
-                                                e.preventDefault();
-                                                onNavigateToCategories();
-                                                setIsDropdownOpen(false);
-                                              }}
-                                              className="block px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                              role="menuitem"
-                                            >
-                                              Ver Todas
-                                            </a>
-                                            {categories.map(category => (
-                                                <a
-                                                  key={category}
-                                                  href="#"
-                                                  onClick={(e) => {
-                                                    e.preventDefault();
-                                                    handleCategoryClick(category);
-                                                  }}
-                                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                                  role="menuitem"
-                                                >
-                                                  {category}
-                                                </a>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            <button onClick={onNavigateToCategories} className={`${navItemClasses} ${currentPage === 'categories' ? activeClasses : inactiveClasses}`}>
+                                Categorias
+                            </button>
                             <button onClick={() => setCurrentPage('about')} className={`${navItemClasses} ${currentPage === 'about' ? activeClasses : inactiveClasses}`}>
                                 Quem Somos
                             </button>
@@ -162,49 +105,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onCategory
             {isMobileMenuOpen && (
                 <div className="md:hidden" id="mobile-menu">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <button onClick={handleMobileHomeClick} className={`w-full text-left ${mobileNavItemClasses} ${currentPage === 'home' ? activeClasses : inactiveClasses}`}>
+                        <button onClick={() => { onNavigateHome(); setIsMobileMenuOpen(false); }} className={`w-full text-left ${mobileNavItemClasses} ${currentPage === 'home' ? activeClasses : inactiveClasses}`}>
                             Início
                         </button>
                         
-                        <div>
-                            <button onClick={() => setIsMobileCategoryOpen(!isMobileCategoryOpen)} className={`w-full text-left flex justify-between items-center ${mobileNavItemClasses} ${currentPage === 'categories' ? activeClasses : inactiveClasses}`}>
-                                <span>Categorias</span>
-                                <svg className={`w-5 h-5 transition-transform ${isMobileCategoryOpen ? 'transform rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                            {isMobileCategoryOpen && (
-                                <div className="mt-1 pl-4 space-y-1">
-                                    <a
-                                      href="#"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        onNavigateToCategories();
-                                        setIsMobileMenuOpen(false);
-                                        setIsMobileCategoryOpen(false);
-                                      }}
-                                      className="block px-3 py-2 rounded-md text-base font-bold text-green-200 hover:bg-green-700 hover:text-white"
-                                      role="menuitem"
-                                    >
-                                      Ver Todas
-                                    </a>
-                                    {categories.map(category => (
-                                        <a
-                                          key={category}
-                                          href="#"
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            handleCategoryClick(category);
-                                          }}
-                                          className="block px-3 py-2 rounded-md text-base font-medium text-green-200 hover:bg-green-700 hover:text-white"
-                                          role="menuitem"
-                                        >
-                                          {category}
-                                        </a>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                        <button onClick={() => { onNavigateToCategories(); setIsMobileMenuOpen(false); }} className={`w-full text-left ${mobileNavItemClasses} ${currentPage === 'categories' ? activeClasses : inactiveClasses}`}>
+                            Categorias
+                        </button>
                         
                         <button onClick={() => handleMobileLinkClick('about')} className={`w-full text-left ${mobileNavItemClasses} ${currentPage === 'about' ? activeClasses : inactiveClasses}`}>
                             Quem Somos
