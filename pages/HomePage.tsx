@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Business } from '../types';
 import { businesses } from '../data/businesses';
 import { generateText } from '../services/geminiService';
+import { trackEvent } from '../services/analytics.ts';
 import ImageSlider from '../components/ImageSlider';
 import FeaturedCard from '../components/FeaturedCard';
 import ResultCard from '../components/ResultCard';
@@ -22,7 +23,6 @@ const NotificationPreferences: React.FC = () => {
         construcao: 'Material de Construção',
         papelaria: 'Papelaria',
         lanchonete: 'Lanchonete',
-        outro : 'Outros'
     };
     const [subscriptions, setSubscriptions] = useState<string[]>([]);
     const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
@@ -107,6 +107,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
         setResultsSummary(null);
         setFilteredBusinesses([]);
 
+        // Rastreia o evento de busca para o Google Analytics
+        trackEvent('search', { search_term: searchQuery });
+
         // Simulate a small delay for better UX
         await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -139,7 +142,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [setLoading, setError, setResultsSummary, setFilteredBusinesses]);
 
     useEffect(() => {
         if (initialQuery) {

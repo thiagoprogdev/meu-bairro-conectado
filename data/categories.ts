@@ -23,6 +23,7 @@ export const categories: string[] = [
 'Restaurante',
 'Salão de Beleza',
 'Salgadoria',
+'Vestuario',
 'Veterinária',
 
 ];

@@ -9,6 +9,7 @@ import HelpPage from './pages/HelpPage';
 import Chatbot from './components/Chatbot';
 import BusinessDetailModal from './components/BusinessDetailModal';
 import { Business } from './types';
+import { trackPageView, trackEvent } from './services/analytics.ts';
 
 
 type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help';
@@ -57,6 +58,22 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
 
+  // Rastreamento de visualização de página para o Google Analytics
+  useEffect(() => {
+    const pageMap: { [key in Page]: { path: string; title: string } } = {
+      home: { path: '/', title: 'Página Inicial' },
+      business: { path: '/para-empresas', title: 'Para Empresas' },
+      admin: { path: '/admin', title: 'Painel do Administrador' },
+      about: { path: '/quem-somos', title: 'Quem Somos' },
+      plans: { path: '/planos', title: 'Planos' },
+      help: { path: '/ajuda', title: 'Ajuda' },
+    };
+    const pageInfo = pageMap[currentPage];
+    if (pageInfo) {
+      trackPageView(pageInfo.path, pageInfo.title);
+    }
+  }, [currentPage]);
+
 
   useEffect(() => {
     const handleNotification = (event: Event) => {
@@ -91,6 +108,8 @@ const App: React.FC = () => {
   const handleCategorySearch = (category: string) => {
     setInitialSearchQuery(category);
     setCurrentPage('home');
+    // Rastreia a busca por categoria no Google Analytics
+    trackEvent('search', { search_term: category });
   };
 
   const navigateHome = () => {
