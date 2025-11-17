@@ -97,6 +97,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
     const [resultsSummary, setResultsSummary] = useState<string | null>(null);
     const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
     
+    // Memoizamos a função de busca com useCallback para garantir que ela tenha uma
+    // identidade estável entre as renderizações. Isso é crucial para evitar
+    // referências "viciadas" (stale) e garantir que o useEffect funcione corretamente.
     const performSearch = useCallback(async (searchQuery: string) => {
         if (!searchQuery) {
             setError('Por favor, digite o que você procura.');
@@ -142,14 +145,15 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
         } finally {
             setLoading(false);
         }
-    }, []); // As dependências estão vazias porque a função só usa setters de estado (que são estáveis) e argumentos.
+    }, []); // As funções de 'setState' são estáveis e não precisam ser listadas como dependências.
 
+    // Este efeito dispara uma busca sempre que a prop 'initialQuery' muda (ex: ao clicar numa categoria).
     useEffect(() => {
         if (initialQuery) {
             setQuery(initialQuery);
             performSearch(initialQuery);
         } else {
-            // Reset state when navigating home without a query
+            // Reseta o estado ao navegar para a home sem uma busca
             setQuery('');
             setError(null);
             setResultsSummary(null);
