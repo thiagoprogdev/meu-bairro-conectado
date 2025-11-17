@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Business } from '../types';
 import { businesses } from '../data/businesses';
 import { generateText } from '../services/geminiService';
@@ -91,80 +91,85 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState(''); // Controla o valor do campo de input
+    const [searchTerm, setSearchTerm] = useState(''); // Controla o termo que de fato aciona a busca
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [resultsSummary, setResultsSummary] = useState<string | null>(null);
     const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
     
-    // Memoizamos a função de busca com useCallback para garantir que ela tenha uma
-    // identidade estável entre as renderizações. Isso é crucial para evitar
-    // referências "viciadas" (stale) e garantir que o useEffect funcione corretamente.
-    const performSearch = useCallback(async (searchQuery: string) => {
-        if (!searchQuery) {
-            setError('Por favor, digite o que você procura.');
-            return;
-        }
-        setLoading(true);
-        setError(null);
-        setResultsSummary(null);
-        setFilteredBusinesses([]);
-
-        // Rastreia o evento de busca para o Google Analytics
-        trackEvent('search', { search_term: searchQuery });
-
-        // Simulate a small delay for better UX
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        try {
-            const lowerCaseQuery = searchQuery.toLowerCase();
-            const results = businesses.filter(b =>
-                b.name.toLowerCase().includes(lowerCaseQuery) ||
-                b.category.toLowerCase().includes(lowerCaseQuery) ||
-                b.description.toLowerCase().includes(lowerCaseQuery) ||
-                b.shortDescription.toLowerCase().includes(lowerCaseQuery)
-            );
-            
-            setFilteredBusinesses(results);
-
-            // Generate a summary with Gemini
-            let summaryPrompt = '';
-            if (results.length > 0) {
-                const businessNames = results.map(b => b.name).join(', ');
-                summaryPrompt = `Escreva um pequeno texto amigável dizendo que você encontrou ${results.length} resultado(s) para a busca "${searchQuery}", incluindo: ${businessNames}.`;
-            } else {
-                summaryPrompt = `Escreva um pequeno texto amigável dizendo que nenhum resultado foi encontrado para a busca "${searchQuery}", e sugira ao usuário tentar outros termos ou explorar as categorias.`;
-            }
-
-            const response = await generateText(summaryPrompt);
-            setResultsSummary(response.text ?? null);
-
-        } catch (err) {
-            setError('Ocorreu um erro ao buscar. Tente novamente.');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    }, []); // As funções de 'setState' são estáveis e não precisam ser listadas como dependências.
-
-    // Este efeito dispara uma busca sempre que a prop 'initialQuery' muda (ex: ao clicar numa categoria).
+    // Efeito 1: Sincroniza o estado interno quando uma categoria é selecionada externamente (via props).
     useEffect(() => {
         if (initialQuery) {
             setQuery(initialQuery);
-            performSearch(initialQuery);
+            setSearchTerm(initialQuery); // Aciona o efeito de busca
         } else {
-            // Reseta o estado ao navegar para a home sem uma busca
+             // Limpa tudo ao navegar para home sem uma busca específica
             setQuery('');
+            setSearchTerm('');
             setError(null);
             setResultsSummary(null);
             setFilteredBusinesses([]);
-            setLoading(false);
         }
-    }, [initialQuery, performSearch]);
+    }, [initialQuery]);
+
+    // Efeito 2: Executa a busca sempre que `searchTerm` for alterado.
+    useEffect(() => {
+        const executeSearch = async () => {
+            if (!searchTerm) {
+                 // Se o termo de busca está vazio, não faz nada. Os resultados já foram limpos pelo Efeito 1.
+                return;
+            }
+            
+            setLoading(true);
+            setError(null);
+            setResultsSummary(null);
+            setFilteredBusinesses([]);
+
+            trackEvent('search', { search_term: searchTerm });
+
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            try {
+                const lowerCaseQuery = searchTerm.toLowerCase();
+                const results = businesses.filter(b =>
+                    b.name.toLowerCase().includes(lowerCaseQuery) ||
+                    b.category.toLowerCase().includes(lowerCaseQuery) ||
+                    b.description.toLowerCase().includes(lowerCaseQuery) ||
+                    b.shortDescription.toLowerCase().includes(lowerCaseQuery)
+                );
+                
+                setFilteredBusinesses(results);
+
+                let summaryPrompt = '';
+                if (results.length > 0) {
+                    const businessNames = results.map(b => b.name).join(', ');
+                    summaryPrompt = `Escreva um pequeno texto amigável dizendo que você encontrou ${results.length} resultado(s) para a busca "${searchTerm}", incluindo: ${businessNames}.`;
+                } else {
+                    summaryPrompt = `Escreva um pequeno texto amigável dizendo que nenhum resultado foi encontrado para a busca "${searchTerm}", e sugira ao usuário tentar outros termos ou explorar as categorias.`;
+                }
+
+                const response = await generateText(summaryPrompt);
+                setResultsSummary(response.text ?? null);
+
+            } catch (err) {
+                setError('Ocorreu um erro ao buscar. Tente novamente.');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        executeSearch();
+    }, [searchTerm]); // Este efeito depende apenas do termo de busca final.
 
     const handleManualSearch = () => {
-      performSearch(query);
-    }
+        if (!query) {
+            setError('Por favor, digite o que você procura.');
+            return;
+        }
+        setSearchTerm(query); // Aciona o efeito de busca com o conteúdo do input.
+    };
 
     return (
         <div className="container mx-auto max-w-5xl space-y-8">
