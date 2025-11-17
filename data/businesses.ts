@@ -103,15 +103,15 @@ export const businesses: Business[] = [
   },
   {
     id: 5,
-    name: 'Sua empresa aqui',
-    category: 'Pet Shop',
-    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
-    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    name: 'Restaurante Luz da Alvorada',
+    category: 'Restaurante',
+    description: 'Restaurante com pratos variados e ambiente acolhedor, comida caseira e saborosa.',
+    shortDescription: 'Restaurante com pratos variados e ambiente acolhedor.',
     location: {
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
+      mapsUrl: 'https://maps.app.goo.gl/1zdCdCF1ab69RWy1A'
     },
     contact: {
-      phone: '5511955554444',
+      phone: '5521992644990',
     },
     photos: [], // Lista vazia para testar o placeholder
     reviews: [
@@ -130,9 +130,16 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
-    photos: [], // Lista vazia para testar o placeholder
+    photos: [
+      '/images/luz-da-alvorada/logoluzdaalvorada.jpeg',
+      '/images/luz-da-alvorada/file1.jpeg',
+      '/images/luz-da-alvorada/file2.jpeg',
+      '/images/luz-da-alvorada/file3.jpeg',
+      '/images/luz-da-alvorada/file4.jpeg'
+
+    ],
     reviews: [
-      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+      { rating: 5, comment: "Melhor selfie service da região e ainda vem com sembremesa!", author: "Lucas M." }
     ]
   },
   {

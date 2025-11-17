@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 
 const HelpPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
+        setStatusMessage(null);
 
         const formData = new FormData(event.currentTarget);
         const contactData = {
@@ -30,12 +32,12 @@ const HelpPage: React.FC = () => {
                 throw new Error('Network response was not ok');
             }
 
-            alert('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.');
+            setStatusMessage({ text: 'Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', type: 'success' });
             event.currentTarget.reset();
 
         } catch (error) {
             console.error('Failed to submit form:', error);
-            alert('Houve um erro ao enviar sua mensagem. Por favor, tente novamente.');
+            setStatusMessage({ text: 'Houve um erro ao enviar sua mensagem. Por favor, tente novamente.', type: 'error' });
         } finally {
             setIsLoading(false);
         }
@@ -83,7 +85,12 @@ const HelpPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex items-center justify-end gap-4">
+                        {statusMessage && (
+                            <p className={`text-sm font-medium ${statusMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                                {statusMessage.text}
+                            </p>
+                        )}
                          <button 
                             type="submit" 
                             disabled={isLoading}

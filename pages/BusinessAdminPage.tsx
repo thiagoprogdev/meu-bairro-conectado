@@ -3,10 +3,12 @@ import { categories } from '../data/categories';
 
 const BusinessAdminPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
     const handleRegistrationSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
+        setStatusMessage(null);
         
         const formData = new FormData(event.currentTarget);
         const businessData = {
@@ -33,12 +35,12 @@ const BusinessAdminPage: React.FC = () => {
                 throw new Error('Network response was not ok');
             }
             
-            alert('Cadastro enviado com sucesso! Nossa equipe recebeu seus dados e entrará em contato em breve para acordar o pagamento e ativar seu perfil.');
+            setStatusMessage({ text: 'Cadastro enviado com sucesso! Entraremos em contato em breve.', type: 'success' });
             event.currentTarget.reset();
 
         } catch (error) {
             console.error('Failed to submit form:', error);
-            alert('Houve um erro ao enviar seu cadastro. Por favor, tente novamente.');
+            setStatusMessage({ text: 'Houve um erro ao enviar seu cadastro. Por favor, tente novamente.', type: 'error' });
         } finally {
             setIsLoading(false);
         }
@@ -115,7 +117,12 @@ const BusinessAdminPage: React.FC = () => {
                         </div>
                     </div>
                     
-                    <div className="flex justify-end pt-6">
+                    <div className="flex items-center justify-end pt-6 gap-4">
+                        {statusMessage && (
+                            <p className={`text-sm font-medium ${statusMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                                {statusMessage.text}
+                            </p>
+                        )}
                         <button 
                             type="submit" 
                             disabled={isLoading}
