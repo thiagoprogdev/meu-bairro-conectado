@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Business } from '../types';
 import { businesses } from '../data/businesses';
 import { generateText } from '../services/geminiService';
-import { trackEvent } from '../services/analytics.ts';
+import { trackEvent } from '../services/analytics';
 import ImageSlider from '../components/ImageSlider';
 import FeaturedCard from '../components/FeaturedCard';
 import ResultCard from '../components/ResultCard';
@@ -97,7 +97,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
     const [resultsSummary, setResultsSummary] = useState<string | null>(null);
     const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
     
-    const handleSearch = useCallback(async (searchQuery: string) => {
+    const performSearch = useCallback(async (searchQuery: string) => {
         if (!searchQuery) {
             setError('Por favor, digite o que você procura.');
             return;
@@ -142,12 +142,12 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
         } finally {
             setLoading(false);
         }
-    }, [setLoading, setError, setResultsSummary, setFilteredBusinesses]);
+    }, []); // As dependências estão vazias porque a função só usa setters de estado (que são estáveis) e argumentos.
 
     useEffect(() => {
         if (initialQuery) {
             setQuery(initialQuery);
-            handleSearch(initialQuery);
+            performSearch(initialQuery);
         } else {
             // Reset state when navigating home without a query
             setQuery('');
@@ -156,7 +156,11 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
             setFilteredBusinesses([]);
             setLoading(false);
         }
-    }, [initialQuery, handleSearch]);
+    }, [initialQuery, performSearch]);
+
+    const handleManualSearch = () => {
+      performSearch(query);
+    }
 
     return (
         <div className="container mx-auto max-w-5xl space-y-8">
@@ -172,7 +176,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
                             type="text"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSearch(query)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleManualSearch()}
                             placeholder="Ex: salão de beleza, material de construção..."
                             className="w-full p-4 pl-12 text-lg border-2 border-gray-300 rounded-full focus:ring-green-500 focus:border-green-500 transition-shadow shadow-sm hover:shadow-md"
                         />
@@ -182,7 +186,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialQuery, onViewDetails }) => {
                     </div>
 
                     <button
-                        onClick={() => handleSearch(query)}
+                        onClick={handleManualSearch}
                         disabled={loading}
                         className="w-full bg-green-800 text-white font-bold py-3 px-4 rounded-full hover:bg-green-700 transition-all transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg"
                     >
