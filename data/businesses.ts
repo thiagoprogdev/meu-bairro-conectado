@@ -140,6 +140,8 @@ export const businesses: Business[] = [
     },
     contact: {
       phone: '5521985395143',
+      instagram: 'https://www.instagram.com/deivisogesseiro?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
+      facebook: 'https://www.facebook.com/profile.php?id=100095431654415'
     },
     openingHours: '24h',
     photos: [
