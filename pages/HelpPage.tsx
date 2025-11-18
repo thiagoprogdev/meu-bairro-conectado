@@ -6,10 +6,11 @@ const HelpPage: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const form = event.currentTarget; // Capture reference before async op
         setIsLoading(true);
         setStatusMessage(null);
 
-        const formData = new FormData(event.currentTarget);
+        const formData = new FormData(form);
         const contactData = {
             formType: 'Help Contact Form',
             name: formData.get('name'),
@@ -33,7 +34,7 @@ const HelpPage: React.FC = () => {
             }
 
             setStatusMessage({ text: 'Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', type: 'success' });
-            event.currentTarget.reset();
+            form.reset(); // Use captured reference
 
         } catch (error) {
             console.error('Failed to submit form:', error);

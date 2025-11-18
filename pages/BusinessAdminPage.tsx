@@ -7,10 +7,11 @@ const BusinessAdminPage: React.FC = () => {
 
     const handleRegistrationSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const form = event.currentTarget; // Capture reference before async op
         setIsLoading(true);
         setStatusMessage(null);
         
-        const formData = new FormData(event.currentTarget);
+        const formData = new FormData(form);
         const businessData = {
             formType: 'Business Registration',
             name: formData.get('businessName'),
@@ -36,7 +37,7 @@ const BusinessAdminPage: React.FC = () => {
             }
             
             setStatusMessage({ text: 'Cadastro enviado com sucesso! Entraremos em contato em breve.', type: 'success' });
-            event.currentTarget.reset();
+            form.reset(); // Use captured reference
 
         } catch (error) {
             console.error('Failed to submit form:', error);
