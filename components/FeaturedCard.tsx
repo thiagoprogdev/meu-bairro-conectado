@@ -13,9 +13,11 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ business, onClick }) => {
   return (
     <button 
       onClick={onClick}
-      className="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 text-left w-full"
+      className="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 text-left w-full border border-gray-100"
     >
-      <img src={image} alt={name} className="w-full h-32 object-cover" />
+      <div className="w-full h-48 bg-gray-50 p-2">
+        <img src={image} alt={name} className="w-full h-full object-contain" />
+      </div>
       <div className="p-4">
         <h3 className="font-bold text-lg text-gray-800 truncate" title={name}>{name}</h3>
         <p className="text-sm text-gray-500">{category}</p>

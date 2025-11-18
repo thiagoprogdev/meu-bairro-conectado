@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Business } from '../types';
 import StarRating from './StarRating';
@@ -76,11 +77,11 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">Galeria de Fotos</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                             {photos.map((photo, index) => (
-                                <a href={photo} target="_blank" rel="noopener noreferrer" key={index} className="group">
+                                <a href={photo} target="_blank" rel="noopener noreferrer" key={index} className="group bg-gray-50 rounded-md border border-gray-200 overflow-hidden">
                                     <img 
                                         src={photo} 
                                         alt={`Foto ${index + 1} de ${name}`} 
-                                        className="rounded-md object-cover h-32 w-full transition-transform duration-300 group-hover:scale-105"
+                                        className="w-full h-32 object-contain transition-transform duration-300 group-hover:scale-105"
                                     />
                                 </a>
                             ))}
@@ -159,3 +160,4 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
 };
 
 export default BusinessDetailModal;
+

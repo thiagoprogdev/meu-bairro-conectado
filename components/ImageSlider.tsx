@@ -6,7 +6,6 @@ const slides = [
     { url: '/images/slide/logoacai.jpg', alt: 'Açaí Grumari' },
     { url: '/images/slide/logovania.jpeg', alt: 'Vânia Marques confeitaria' },
     { url: '/images/slide/logodeivisoncacau.png', alt: 'Equipe Deivison Cacau' }
-    
 ];
 
 const ImageSlider: React.FC = () => {
@@ -26,10 +25,10 @@ const ImageSlider: React.FC = () => {
     }, [nextSlide]);
 
     return (
-        <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-lg">
+        <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-lg bg-gray-900">
             {slides.map((slide, index) => (
                 <div key={index} className={`absolute w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}>
-                    <img src={slide.url} alt={slide.alt} className="w-full h-full object-cover" />
+                    <img src={slide.url} alt={slide.alt} className="w-full h-full object-contain" />
                 </div>
             ))}
             <button onClick={prevSlide} className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
