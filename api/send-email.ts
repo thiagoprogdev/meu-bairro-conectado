@@ -1,14 +1,11 @@
 // Vercel automatically creates a serverless function from this file.
 // This function will live at the /api/send-email endpoint.
 
-// We are using the Edge runtime for speed and efficiency.
 export const config = {
   runtime: 'edge',
 };
 
-// This is the main handler for the serverless function.
 export default async function handler(request: Request) {
-  // We only want to handle POST requests for this endpoint.
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ message: 'Only POST requests are allowed' }), {
       status: 405,
@@ -17,31 +14,73 @@ export default async function handler(request: Request) {
   }
 
   try {
-    // Get the form data from the request body.
     const formData = await request.json();
+    const resendApiKey = process.env.RESEND_API_KEY;
 
-    // --- EMAIL SENDING LOGIC ---
-    // In a real-world scenario, you would integrate an email sending service here.
-    // Examples: Nodemailer, SendGrid, Resend, AWS SES.
-    // You would use an API key stored securely as an environment variable.
+    // =====================================================================
+    // ENVIO REAL (RESEND)
+    // =====================================================================
+    if (resendApiKey) {
+        try {
+            const res = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${resendApiKey}`
+                },
+                body: JSON.stringify({
+                    from: 'Meu Bairro Conectado <onboarding@resend.dev>',
+                    // OBS: No plano gratuito do Resend, você geralmente só pode enviar
+                    // para o e-mail que você cadastrou na conta.
+                    to: ['thiagoanalista.estacio@gmail.com'], 
+                    subject: `Novo Contato: ${formData.formType}`,
+                    html: `
+                        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                            <h1 style="color: #166534;">Novo Formulário Recebido</h1>
+                            <p><strong>Tipo de Formulário:</strong> ${formData.formType}</p>
+                            <hr style="border: 1px solid #eee; margin: 20px 0;" />
+                            <h3>Dados:</h3>
+                            <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">${JSON.stringify(formData, null, 2)}</pre>
+                        </div>
+                    `
+                })
+            });
 
-    // For this example, we will simulate the email sending by logging the details
-    // to the Vercel function logs (server-side console).
-    console.log("--- NEW FORM SUBMISSION ---");
-    console.log("Recipient: thiagoanalista.estacio@gmail.com");
-    console.log("Subject: New Form Submission from 'Meu Bairro Conectado'");
-    console.log("Body (JSON data):");
-    console.log(JSON.stringify(formData, null, 2));
-    console.log("---------------------------");
+            if (!res.ok) {
+                const errorData = await res.json();
+                console.error("Erro ao enviar pelo Resend:", errorData);
+                // Se falhar o envio real, lançamos erro para cair no catch
+                throw new Error(`Erro Resend: ${JSON.stringify(errorData)}`);
+            }
 
-    // After successfully "sending" the email, return a success response.
-    return new Response(JSON.stringify({ message: 'Form submitted successfully!' }), {
+            return new Response(JSON.stringify({ message: 'E-mail enviado com sucesso!' }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+        } catch (emailError) {
+            console.error("Falha ao tentar enviar e-mail real:", emailError);
+            // Em caso de falha na API de e-mail, retornamos erro 500 para o frontend saber
+            return new Response(JSON.stringify({ message: 'Erro ao processar envio de e-mail.' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+    }
+
+    // =====================================================================
+    // MODO SIMULAÇÃO (Fallback se não houver API KEY)
+    // =====================================================================
+    console.log("=== [SIMULAÇÃO - SEM CHAVE API] ===");
+    console.log("Para envio real, adicione RESEND_API_KEY nas variáveis de ambiente da Vercel.");
+    console.log("Dados recebidos:", JSON.stringify(formData, null, 2));
+    
+    return new Response(JSON.stringify({ message: 'Form submitted successfully (Simulation Mode)' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    // If anything goes wrong, log the error and return a server error response.
     console.error('Error handling form submission:', error);
     return new Response(JSON.stringify({ message: 'Error processing request' }), {
       status: 500,
