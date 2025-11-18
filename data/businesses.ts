@@ -15,6 +15,7 @@ export const businesses: Business[] = [
       instagram: 'https://instagram.com/totalbazar',
       facebook: 'https://facebook.com/totalbazar'
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [
       '/images/total-bazar/file1.jpg', 
       '/images/total-bazar/file2.jpeg',
@@ -40,6 +41,7 @@ export const businesses: Business[] = [
       instagram: 'https://www.instagram.com/acaigrumari',
       facebook: 'https://www.facebook.com/acaigrumari/'
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [
       '/images/acai-grumari/logo.jpg', 
       '/images/acai-grumari/file1.jpg',
@@ -62,6 +64,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5521999055637',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [
       '/images/fornini/logofornini.png',
       '/images/fornini/file1.png',
@@ -85,6 +88,7 @@ export const businesses: Business[] = [
       phone: '5521984461269',
       instagram: 'https://instagram.com/marquesconft',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [
       '/images/vaniamarquesconfeitaria/logovania.jpeg',
       '/images/vaniamarquesconfeitaria/file1.jpeg',
@@ -113,6 +117,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5521992644990',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [
       '/images/luz-da-alvorada/logoluzdaalvorada.jpeg',
       '/images/luz-da-alvorada/file1.jpeg',
@@ -136,6 +141,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [], // Lista vazia para testar o placeholder
     reviews: [
       { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
@@ -153,6 +159,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [], // Lista vazia para testar o placeholder
     reviews: [
       { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
@@ -170,6 +177,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [], // Lista vazia para testar o placeholder
     reviews: [
       { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
@@ -187,6 +195,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [], // Lista vazia para testar o placeholder
     reviews: [
       { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
@@ -204,6 +213,7 @@ export const businesses: Business[] = [
     contact: {
       phone: '5511955554444',
     },
+    openingHours: 'Seg a Sáb: 09:00 às 18:00',
     photos: [], // Lista vazia para testar o placeholder
     reviews: [
       { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }

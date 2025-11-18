@@ -8,7 +8,7 @@ interface BusinessDetailModalProps {
 }
 
 const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onClose }) => {
-    const { name, description, location, photos, contact, reviews } = business;
+    const { name, description, location, photos, contact, reviews, openingHours } = business;
     const [userRating, setUserRating] = useState(0);
 
     const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / (reviews.length || 1);
@@ -57,6 +57,15 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                         <StarRating rating={averageRating} />
                         <span className="text-gray-600 text-sm">({reviews.length} avaliações)</span>
                     </div>
+
+                    {openingHours && (
+                        <div className="mt-4 flex items-center text-gray-600 bg-gray-50 p-2 rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-sm font-medium">{openingHours}</span>
+                        </div>
+                    )}
 
                     <p className="mt-4 text-gray-600">{description}</p>
                 </div>

@@ -18,6 +18,7 @@ const BusinessAdminPage: React.FC = () => {
             category: formData.get('category'),
             description: formData.get('description'),
             phone: formData.get('phone'),
+            openingHours: formData.get('openingHours'),
             instagram: formData.get('instagram'),
             facebook: formData.get('facebook'),
             files: (formData.get('file-upload') as File)?.name ? 'Arquivos selecionados' : 'Nenhum arquivo selecionado'
@@ -72,6 +73,10 @@ const BusinessAdminPage: React.FC = () => {
                                     ))}
                                 </select>
                             </div>
+                        </div>
+                        <div className="mt-6">
+                             <label htmlFor="openingHours" className="block text-sm font-medium text-gray-700">Horário de Funcionamento</label>
+                             <input type="text" id="openingHours" name="openingHours" placeholder="Ex: Seg a Sex: 09:00 às 18:00 | Sáb: 09:00 às 13:00" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm" />
                         </div>
                         <div className="mt-6">
                             <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descrição</label>
