@@ -4,7 +4,8 @@ const slides = [
     { url: '/images/slide/luz da alvorada.jpg', alt: 'Restaurante Luz da Alvorada' },
     { url: '/images/slide/file1.jpg', alt: 'Total bazar material de construção' },
     { url: '/images/slide/logoacai.jpg', alt: 'Açaí Grumari' },
-    { url: '/images/slide/logovania.jpeg', alt: 'Vânia Marques confeitaria' }
+    { url: '/images/slide/logovania.jpeg', alt: 'Vânia Marques confeitaria' },
+    { url: '/images/slide/logodeivisoncacau.png', alt: 'Equipe Deivison Cacau' }
     
 ];
 

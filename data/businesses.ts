@@ -131,20 +131,28 @@ export const businesses: Business[] = [
   },
   {
     id: 6,
-    name: 'Sua empresa aqui',
-    category: 'Pet Shop',
-    description: 'Cuidado completo para seu animal de estimação. Oferecemos banho e tosa, rações, acessórios e brinquedos. Tudo para o bem-estar do seu melhor amigo.',
-    shortDescription: 'Banho, tosa, rações e acessórios para seu pet.',
+    name: 'Equipe Deivison Cacau',
+    category: 'Serviços',
+    description: 'Se você procura profissionais com excelência, você está no lugar certo. Temos a solução que você precisa!',
+    shortDescription: 'Solução em Drywall, gesso, pinturas e reformas.',
     location: {
       mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Canto+do+Pet'
     },
     contact: {
-      phone: '5511955554444',
+      phone: '5521985395143',
     },
-    openingHours: 'Seg a Sáb: 09:00 às 18:00',
-    photos: [], // Lista vazia para testar o placeholder
+    openingHours: '24h',
+    photos: [
+      '/images/deivison-resende-gesso/logodeivisoncacau.png',
+      '/images/deivison-resende-gesso/file1.jpeg',
+      '/images/deivison-resende-gesso/file2.jpeg',
+      '/images/deivison-resende-gesso/file3.jpeg',
+      '/images/deivison-resende-gesso/file4.jpeg',
+      '/images/deivison-resende-gesso/file5.jpeg',
+      '/images/deivison-resende-gesso/file6.jpeg'
+    ],
     reviews: [
-      { rating: 5, comment: "Meu cachorro voltou cheiroso e feliz!", author: "Lucas M." }
+      { rating: 5, comment: "Serviço de primeira, qualidade impecável!", author: "Lucas M." }
     ]
   },
   {
