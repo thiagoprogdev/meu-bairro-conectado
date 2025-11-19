@@ -3,6 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Script de Debug para capturar erros em dispositivos móveis (iPhone Tela Branca) -->
+    <script>
+      window.onerror = function(msg, url, line, col, error) {
+        // Ignora erros comuns não fatais
+        if (msg.toLowerCase().includes('resizeobserver')) return;
+        
+        // Cria um elemento visual para mostrar o erro
+        var e = document.createElement('div');
+        e.style.cssText = 'position:fixed;top:0;left:0;background:#ef4444;color:white;z-index:99999;padding:20px;width:100%;font-family:sans-serif;font-size:12px;word-wrap:break-word;box-shadow:0 4px 6px rgba(0,0,0,0.1);';
+        e.innerText = 'Ops! Ocorreu um erro: ' + msg + ' (Linha ' + line + ')';
+        
+        // Adiciona ao corpo apenas se ele existir, senão espera
+        if(document.body) {
+           document.body.appendChild(e);
+        } else {
+           window.addEventListener('DOMContentLoaded', function() {
+              document.body.appendChild(e);
+           });
+        }
+      };
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -23,8 +45,15 @@
 
     <!-- Polyfill para evitar erros em iOS antigos ou bibliotecas que esperam Node globals -->
     <script>
-      window.global = window;
-      window.process = { env: { NODE_ENV: 'production' } };
+      if (typeof global === 'undefined') {
+        window.global = window;
+      }
+      if (typeof globalThis === 'undefined') {
+        window.globalThis = window;
+      }
+      if (typeof process === 'undefined') {
+        window.process = { env: { NODE_ENV: 'production' } };
+      }
     </script>
 
     <!-- Polyfill for Import Maps on iOS 16.3 and older -->

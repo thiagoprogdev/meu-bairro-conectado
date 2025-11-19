@@ -25,7 +25,14 @@ const NotificationPreferences: React.FC = () => {
         lanchonete: 'Lanchonete',
     };
     const [subscriptions, setSubscriptions] = useState<string[]>([]);
-    const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
+    
+    // Inicializa estado de forma segura para navegadores sem suporte (iOS < 16.4)
+    const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | 'unsupported'>(() => {
+        if (typeof window !== 'undefined' && 'Notification' in window) {
+            return Notification.permission;
+        }
+        return 'unsupported';
+    });
 
     useEffect(() => {
         const savedSubs = localStorage.getItem('notification-subs');
@@ -43,20 +50,33 @@ const NotificationPreferences: React.FC = () => {
     };
 
     const handleSave = async () => {
+        // Proteção contra navegadores que não suportam notificações
+        if (!('Notification' in window)) {
+             alert('As notificações não são suportadas neste navegador ou dispositivo.');
+             // Ainda salva as preferências locais para o toast in-app
+             localStorage.setItem('notification-subs', JSON.stringify(subscriptions));
+             return;
+        }
+
         if (Notification.permission === 'default') {
-            const permission = await Notification.requestPermission();
-            setNotificationPermission(permission);
-            if (permission !== 'granted') {
-                alert('Permissão para notificações negada. Você não receberá alertas.');
-                return;
+            try {
+                const permission = await Notification.requestPermission();
+                setNotificationPermission(permission);
+                if (permission !== 'granted') {
+                    alert('Permissão para notificações negada. Você não receberá alertas no dispositivo, apenas no site.');
+                    // Não retorna, permite salvar preferências para toasts internos
+                }
+            } catch (e) {
+                console.error('Erro ao solicitar permissão:', e);
             }
         }
 
-        if (notificationPermission === 'granted') {
-            localStorage.setItem('notification-subs', JSON.stringify(subscriptions));
-            alert('Preferências salvas com sucesso!');
+        localStorage.setItem('notification-subs', JSON.stringify(subscriptions));
+        
+        if (notificationPermission === 'granted' || Notification.permission === 'granted') {
+             alert('Preferências salvas com sucesso!');
         } else {
-            alert('Por favor, habilite as notificações nas configurações do seu navegador.');
+             alert('Preferências salvas! Habilite as notificações no navegador para receber alertas mesmo fora do site.');
         }
     };
 

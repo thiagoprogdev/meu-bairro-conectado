@@ -97,8 +97,13 @@ const App: React.FC = () => {
 
         if (subscriptions.includes(categoryKey)) {
             setNotification(detail);
-            if (Notification.permission === 'granted') {
-                new Notification(detail.title, { body: detail.body });
+            // Proteção: Verifica se a API de Notificação existe no navegador (evita crash no iPhone antigo)
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    new Notification(detail.title, { body: detail.body });
+                } catch (e) {
+                    console.warn('Erro ao exibir notificação nativa:', e);
+                }
             }
         }
     };
