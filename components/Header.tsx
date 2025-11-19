@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onNavigate
     }
 
     return (
-        <header className="bg-green-800 shadow-md sticky top-0 z-30" ref={headerRef}>
+        <header className="bg-green-800 shadow-md sticky top-0 z-30 pt-[env(safe-area-inset-top)]" ref={headerRef}>
             <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">

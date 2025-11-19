@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Remove o highlight cinza ao tocar em links no iOS */
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  /* Mobile viewport bug fix */
+  min-height: 100dvh;
+  /* Evita o efeito elástico (bounce) ao rolar a página no iOS, que pode parecer bug */
+  overscroll-behavior-y: none;
+}
+
 @keyframes fade-in-right {
   from {
     opacity: 0;
