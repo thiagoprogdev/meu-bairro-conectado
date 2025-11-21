@@ -128,9 +128,17 @@ const App: React.FC = () => {
   const handleViewDetails = (business: Business) => {
     setSelectedBusiness(business);
     setIsModalOpen(true);
-    // Rastreia a visualização do detalhe da empresa no Google Analytics
+    
+    // Rastreia o clique no card da empresa (Evento Customizado - Fácil de ver)
+    trackEvent('business_card_click', {
+        business_name: business.name,
+        business_category: business.category,
+        business_id: business.id,
+    });
+
+    // Mantém o evento padrão de Ecommerce do GA4
     trackEvent('view_item', {
-        item_id: business.id,
+        item_id: String(business.id),
         item_name: business.name,
         item_category: business.category,
     });
@@ -183,4 +191,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default App

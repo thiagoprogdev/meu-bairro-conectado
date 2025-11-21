@@ -1,5 +1,6 @@
 import React from 'react';
 import { Business } from '../types';
+import { trackEvent } from '../services/analytics';
 
 interface ResultCardProps {
   business: Business;
@@ -11,6 +12,13 @@ const ResultCard: React.FC<ResultCardProps> = ({ business, onViewDetails }) => {
   // Use a imagem local como placeholder
   const image = photos && photos.length > 0 ? photos[0] : '/images/placeholder.jpg';
   
+  const handleWhatsAppClick = () => {
+    trackEvent('click_whatsapp_list', {
+      business_name: name,
+      business_id: business.id
+    });
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col justify-between transform hover:-translate-y-1 transition-transform duration-300 border border-gray-100">
       <div className="w-full h-48 bg-gray-50 p-2">
@@ -31,6 +39,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ business, onViewDetails }) => {
           href={`https://wa.me/${contact.phone}?text=Olá! Vi sua loja no Meu Bairro Conectado.`} 
           target="_blank" 
           rel="noopener noreferrer"
+          onClick={handleWhatsAppClick}
           className="w-full text-center bg-green-500 text-white text-sm font-bold py-2 px-3 rounded-md hover:bg-green-400 transition-colors"
         >
           WhatsApp

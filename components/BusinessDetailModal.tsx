@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Business, Review } from '../types';
 import StarRating from './StarRating';
+import { trackEvent } from '../services/analytics';
 
 interface BusinessDetailModalProps {
     business: Business;
@@ -75,6 +76,14 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
         }
     };
 
+    const trackContactClick = (type: string) => {
+        trackEvent('click_contact', {
+            contact_type: type,
+            business_name: name,
+            business_id: id
+        });
+    };
+
 
     return (
         <div 
@@ -89,7 +98,7 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                     <div className="flex justify-between items-start">
                         <div>
                             <h2 className="text-3xl font-bold text-green-800">{name}</h2>
-                             <a href={location.mapsUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-green-600 hover:underline">Ver no Mapa</a>
+                             <a href={location.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick('maps')} className="text-sm text-green-600 hover:underline">Ver no Mapa</a>
                         </div>
                         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
                     </div>
@@ -133,16 +142,34 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                 <div className="p-6 mt-4 bg-gray-50">
                     <h3 className="text-xl font-semibold text-gray-700 mb-4">Contato e Redes Sociais</h3>
                     <div className="flex flex-wrap gap-4">
-                        <a href={`https://wa.me/${contact.phone}`} target="_blank" rel="noopener noreferrer" className="bg-green-500 text-white font-bold py-2 px-4 rounded-full flex items-center space-x-2 hover:bg-green-600">
+                        <a 
+                            href={`https://wa.me/${contact.phone}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            onClick={() => trackContactClick('whatsapp')}
+                            className="bg-green-500 text-white font-bold py-2 px-4 rounded-full flex items-center space-x-2 hover:bg-green-600"
+                        >
                             <span>WhatsApp</span>
                         </a>
                         {contact.instagram && (
-                            <a href={contact.instagram} target="_blank" rel="noopener noreferrer" className="bg-pink-500 text-white font-bold py-2 px-4 rounded-full hover:bg-pink-600">
+                            <a 
+                                href={contact.instagram} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                onClick={() => trackContactClick('instagram')}
+                                className="bg-pink-500 text-white font-bold py-2 px-4 rounded-full hover:bg-pink-600"
+                            >
                                 Instagram
                             </a>
                         )}
                         {contact.facebook && (
-                             <a href={contact.facebook} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700">
+                             <a 
+                                href={contact.facebook} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                onClick={() => trackContactClick('facebook')}
+                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
+                            >
                                 Facebook
                             </a>
                         )}
