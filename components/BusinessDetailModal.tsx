@@ -1,80 +1,62 @@
 
 import React, { useState, useEffect } from 'react';
-import { Business, Review } from '../types';
+import { Business, GroundingChunk } from '../types';
 import StarRating from './StarRating';
 import { trackEvent } from '../services/analytics';
+import { getGoogleReviews } from '../services/geminiService';
+import { GenerateContentResponse } from "@google/genai";
 
 interface BusinessDetailModalProps {
     business: Business;
     onClose: () => void;
 }
 
+interface GoogleReviewSnippet {
+    text: string;
+    url: string;
+}
+
 const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onClose }) => {
     const { id, name, description, location, photos, contact, openingHours } = business;
     
-    // Estado para armazenar as reviews (agora apenas as estáticas/aprovadas)
-    const [reviews, setReviews] = useState<Review[]>([]);
-    const [userRating, setUserRating] = useState(0);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [googleReviews, setGoogleReviews] = useState<GoogleReviewSnippet[]>([]);
+    const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+    const [errorReviews, setErrorReviews] = useState(false);
 
-    // Carrega reviews apenas dos dados oficiais (props)
     useEffect(() => {
-        setReviews(business.reviews || []);
-    }, [business.reviews]);
-
-    // Calcula a média baseado no estado atual das reviews
-    const averageRating = reviews.length > 0 
-        ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 
-        : 0;
-
-    const handleReviewSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const comment = formData.get('comment') as string;
-        const author = formData.get('author') as string;
-
-        if (!comment || userRating === 0 || !author) {
-            alert("Por favor, preencha seu nome, adicione um comentário e selecione uma nota.");
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        const reviewData = {
-            formType: 'Nova Avaliação (Moderação)',
-            businessName: name,
-            businessId: id,
-            author: author,
-            rating: userRating,
-            comment: comment,
-            date: new Date().toLocaleString('pt-BR')
+        const fetchReviews = async () => {
+            setIsLoadingReviews(true);
+            setErrorReviews(false);
+            try {
+                const response: GenerateContentResponse = await getGoogleReviews(name);
+                const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks as GroundingChunk[] | undefined;
+                
+                const snippets: GoogleReviewSnippet[] = [];
+                
+                if (groundingChunks) {
+                    groundingChunks.forEach((chunk) => {
+                        if (chunk.maps?.placeAnswerSources?.reviewSnippets) {
+                            chunk.maps.placeAnswerSources.reviewSnippets.forEach((s) => {
+                                snippets.push({
+                                    text: s.review,
+                                    url: s.uri
+                                });
+                            });
+                        }
+                    });
+                }
+                
+                setGoogleReviews(snippets);
+            } catch (err) {
+                console.error("Erro ao carregar avaliações do Google:", err);
+                setErrorReviews(true);
+            } finally {
+                setIsLoadingReviews(false);
+            }
         };
 
-        try {
-            const response = await fetch('/api/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(reviewData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Erro ao enviar avaliação');
-            }
-
-            setSubmitSuccess(true);
-            event.currentTarget.reset();
-            setUserRating(0);
-
-        } catch (error) {
-            console.error('Erro ao enviar avaliação:', error);
-            alert('Ocorreu um erro ao enviar sua avaliação. Tente novamente.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+        fetchReviews();
+    }, [name]);
 
     const trackContactClick = (type: string) => {
         trackEvent('click_contact', {
@@ -84,72 +66,69 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
         });
     };
 
-
     return (
         <div 
-            className="fixed inset-0 bg-black bg-opacity-60 z-40 flex justify-center items-center" 
+            className="fixed inset-0 bg-black bg-opacity-70 z-40 flex justify-center items-center backdrop-blur-sm" 
             onClick={onClose}
         >
             <div 
-                className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-4"
-                onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside
+                className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-4 animate-scale-up"
+                onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-6">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-3xl font-bold text-green-800">{name}</h2>
-                             <a href={location.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick('maps')} className="text-sm text-green-600 hover:underline">Ver no Mapa</a>
+                {/* Header Image/Gallery */}
+                <div className="relative h-48 md:h-64 bg-gray-100">
+                    {photos && photos.length > 0 ? (
+                        <img 
+                            src={photos[0]} 
+                            alt={name} 
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-green-100">
+                            <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                         </div>
-                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+                    )}
+                    <button onClick={onClose} className="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
+                        &times;
+                    </button>
+                    <div className="absolute bottom-4 left-4 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                        Parceiro Verificado
                     </div>
-                     <div className="mt-2 flex items-center space-x-2">
-                        <StarRating rating={averageRating} />
-                        <span className="text-gray-600 text-sm">({reviews.length} avaliações)</span>
+                </div>
+
+                <div className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 className="text-3xl font-bold text-gray-800">{name}</h2>
+                             <a href={location.mapsUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick('maps')} className="text-sm text-green-600 hover:underline flex items-center mt-1">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                Ver endereço no Maps
+                             </a>
+                        </div>
                     </div>
 
                     {openingHours && (
-                        <div className="mt-4 flex items-center text-gray-600 bg-gray-50 p-2 rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="flex items-center text-gray-600 bg-gray-50 p-3 rounded-xl border border-gray-100 mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span className="text-sm font-medium">{openingHours}</span>
                         </div>
                     )}
 
-                    <p className="mt-4 text-gray-600">{description}</p>
-                </div>
+                    <p className="text-gray-600 leading-relaxed text-base mb-8">{description}</p>
 
-                {/* Photo Gallery */}
-                {photos && photos.length > 0 && (
-                    <div className="px-6 mt-4">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">Galeria de Fotos</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                            {photos.map((photo, index) => (
-                                <a href={photo} target="_blank" rel="noopener noreferrer" key={index} className="group bg-gray-50 rounded-md border border-gray-200 overflow-hidden">
-                                    <img 
-                                        src={photo} 
-                                        alt={`Foto ${index + 1} de ${name}`} 
-                                        className="w-full h-32 object-contain transition-transform duration-300 group-hover:scale-105"
-                                    />
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-
-                {/* Contact and Social */}
-                <div className="p-6 mt-4 bg-gray-50">
-                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Contato e Redes Sociais</h3>
-                    <div className="flex flex-wrap gap-4">
+                    {/* Action Buttons */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                         <a 
-                            href={`https://wa.me/${contact.phone}`} 
+                            href={`https://wa.me/${contact.phone}?text=Olá! Vi sua loja no Meu Bairro Conectado e gostaria de mais informações.`} 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             onClick={() => trackContactClick('whatsapp')}
-                            className="bg-green-500 text-white font-bold py-2 px-4 rounded-full flex items-center space-x-2 hover:bg-green-600"
+                            className="bg-green-600 text-white font-bold py-4 rounded-xl flex items-center justify-center shadow-lg hover:bg-green-700 transition-all transform hover:scale-[1.02]"
                         >
-                            <span>WhatsApp</span>
+                            <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                            Falar no WhatsApp
                         </a>
                         {contact.instagram && (
                             <a 
@@ -157,115 +136,60 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 onClick={() => trackContactClick('instagram')}
-                                className="bg-pink-500 text-white font-bold py-2 px-4 rounded-full hover:bg-pink-600"
+                                className="bg-gray-800 text-white font-bold py-4 rounded-xl flex items-center justify-center hover:bg-black transition-all"
                             >
-                                Instagram
-                            </a>
-                        )}
-                        {contact.facebook && (
-                             <a 
-                                href={contact.facebook} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                onClick={() => trackContactClick('facebook')}
-                                className="bg-blue-600 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
-                            >
-                                Facebook
+                                Perfil no Instagram
                             </a>
                         )}
                     </div>
-                </div>
 
-                {/* Reviews Section */}
-                <div className="p-6 rounded-b-lg">
-                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Avaliações</h3>
-                    
-                    {reviews.length === 0 ? (
-                        <p className="text-gray-500 italic mb-6">Este estabelecimento ainda não possui avaliações. Seja o primeiro!</p>
-                    ) : (
-                        <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                            {reviews.slice().reverse().map((review, index) => (
-                                <div key={index} className="border-b pb-4 last:border-b-0">
-                                    <div className="flex justify-between items-center">
-                                        <StarRating rating={review.rating} />
-                                        <span className="text-xs text-gray-400 font-medium">{review.author}</span>
-                                    </div>
-                                    <p className="mt-2 text-gray-700 text-sm">{review.comment}</p>
-                                </div>
-                            ))}
+                    {/* Google Reviews Section */}
+                    <div className="border-t pt-8">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-gray-800">Avaliações em Tempo Real</h3>
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase tracking-widest">Google Maps</span>
                         </div>
-                    )}
-
-                    {/* Review Form */}
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                        {submitSuccess ? (
-                            <div className="text-center py-6 animate-fade-in-right">
-                                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                                    <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h4 className="text-lg font-bold text-green-800">Avaliação Recebida!</h4>
-                                <div className="text-sm text-gray-600 mt-2 space-y-2">
-                                    <p>
-                                        Obrigado por compartilhar sua experiência!
-                                    </p>
-                                    <p>
-                                        Para manter a qualidade da nossa comunidade, sua avaliação passará por uma breve análise seguindo nossas <strong>diretrizes de moderação</strong>.
-                                    </p>
-                                    <p>
-                                        Assim que aprovada, ela estará visível para todos aqui no perfil do estabelecimento.
-                                    </p>
-                                </div>
-                                <button 
-                                    onClick={() => setSubmitSuccess(false)} 
-                                    className="mt-4 text-sm text-green-700 font-medium hover:underline"
-                                >
-                                    Enviar outra avaliação
-                                </button>
+                        
+                        {isLoadingReviews ? (
+                            <div className="space-y-4">
+                                {[1, 2].map(i => (
+                                    <div key={i} className="animate-pulse pb-4 border-b border-gray-50">
+                                        <div className="h-4 bg-gray-100 rounded w-32 mb-2"></div>
+                                        <div className="h-3 bg-gray-50 rounded w-full mb-1"></div>
+                                        <div className="h-3 bg-gray-50 rounded w-4/5"></div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : errorReviews ? (
+                            <div className="text-center py-4 bg-red-50 rounded-xl text-red-500 text-xs">
+                                Não foi possível carregar as avaliações do Google agora.
+                            </div>
+                        ) : googleReviews.length === 0 ? (
+                            <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                <p className="text-gray-400 text-sm italic">Nenhuma avaliação detalhada encontrada no Google Maps.</p>
                             </div>
                         ) : (
-                            <>
-                                <h4 className="text-lg font-semibold text-green-800 mb-2">Deixe sua avaliação</h4>
-                                <form className="space-y-4" onSubmit={handleReviewSubmit}>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Sua nota</label>
-                                        <div className="flex space-x-1">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <button
-                                                    key={star}
-                                                    type="button"
-                                                    onClick={() => setUserRating(star)}
-                                                    className="focus:outline-none transform hover:scale-110 transition-transform"
-                                                >
-                                                    <svg className={`w-8 h-8 ${userRating >= star ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                    </svg>
-                                                </button>
-                                            ))}
+                            <div className="space-y-6">
+                                {googleReviews.map((review, index) => (
+                                    <div key={index} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                        <div className="flex items-center mb-2">
+                                            <StarRating rating={5} />
+                                            <span className="ml-2 text-[10px] text-gray-400">Via Google Maps</span>
+                                        </div>
+                                        <p className="text-gray-700 text-sm leading-relaxed">"{review.text}"</p>
+                                        <div className="mt-3 text-right">
+                                            <a 
+                                                href={review.url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="text-[10px] text-green-600 font-bold hover:underline"
+                                            >
+                                                Ver no Maps &rarr;
+                                            </a>
                                         </div>
                                     </div>
-                                    
-                                    <div>
-                                        <label htmlFor="author" className="block text-sm font-medium text-gray-700">Seu Nome</label>
-                                        <input type="text" id="author" name="author" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-2" placeholder="Como você quer ser identificado?" />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="comment" className="block text-sm font-medium text-gray-700">Seu comentário</label>
-                                        <textarea id="comment" name="comment" rows={3} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-2" placeholder="Conte sua experiência..."></textarea>
-                                    </div>
-                                    <div className="text-right">
-                                        <button 
-                                            type="submit" 
-                                            disabled={isSubmitting}
-                                            className="bg-green-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors shadow-sm disabled:bg-gray-400"
-                                        >
-                                            {isSubmitting ? 'Enviando...' : 'Publicar Avaliação'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>

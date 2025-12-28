@@ -1,25 +1,13 @@
+
 import { GoogleGenAI, GenerateContentResponse, Chat } from "@google/genai";
 import { ChatMessage } from '../types';
 
-let ai: GoogleGenAI | null = null;
-
-function getAiInstance(): GoogleGenAI {
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-        console.error("API_KEY environment variable not set. Please configure it in your .env file with VITE_API_KEY.");
-        throw new Error("API_KEY environment variable not set");
-    }
-    if (!ai) {
-        ai = new GoogleGenAI({ apiKey });
-    }
-    return ai;
-}
-
-export const generateText = async (prompt: string) => {
+// Use gemini-3-flash-preview for general text tasks
+export const generateText = async (prompt: string): Promise<GenerateContentResponse> => {
     try {
-        const aiInstance = getAiInstance();
-        const response = await aiInstance.models.generateContent({
-            model: "gemini-2.5-flash",
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
             contents: prompt,
         });
         return response;
@@ -29,11 +17,11 @@ export const generateText = async (prompt: string) => {
     }
 };
 
-
-export const findNearbyPlaces = async (query: string, location: { latitude: number; longitude: number; }) => {
+// Use gemini-2.5-flash for maps grounding tasks
+export const findNearbyPlaces = async (query: string, location: { latitude: number; longitude: number; }): Promise<GenerateContentResponse> => {
     try {
-        const aiInstance = getAiInstance();
-        const response = await aiInstance.models.generateContent({
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: query,
             config: {
@@ -55,9 +43,34 @@ export const findNearbyPlaces = async (query: string, location: { latitude: numb
     }
 };
 
-export const analyzeImage = async (prompt: string, imageBase64: string, mimeType: string) => {
+/**
+ * Busca trechos de avaliações reais do Google Maps para um estabelecimento específico.
+ * Retorna uma Promise de GenerateContentResponse contendo groundingMetadata.
+ */
+export const getGoogleReviews = async (businessName: string): Promise<GenerateContentResponse> => {
     try {
-        const aiInstance = getAiInstance();
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const prompt = `Encontre as avaliações mais recentes e relevantes do Google Maps para o estabelecimento "${businessName}". Por favor, retorne trechos das avaliações de clientes reais.`;
+        
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                tools: [{ googleMaps: {} }],
+            },
+        });
+        
+        return response;
+    } catch (error) {
+        console.error("Error fetching Google reviews:", error);
+        throw new Error("Falha ao buscar avaliações no Google Maps.");
+    }
+};
+
+// Use gemini-3-flash-preview for vision/multimodal tasks
+export const analyzeImage = async (prompt: string, imageBase64: string, mimeType: string): Promise<GenerateContentResponse> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const imagePart = {
             inlineData: {
                 data: imageBase64,
@@ -66,8 +79,8 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
         };
         const textPart = { text: prompt };
 
-        const response: GenerateContentResponse = await aiInstance.models.generateContent({
-            model: 'gemini-2.5-flash',
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
             contents: { parts: [imagePart, textPart] },
         });
         return response;
@@ -77,17 +90,18 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
     }
 };
 
+// Use gemini-3-flash-preview for chat tasks
 export const getChatResponse = async (history: ChatMessage[], newMessage: string) => {
     try {
-        const aiInstance = getAiInstance();
-        const chat: Chat = aiInstance.chats.create({
-            model: 'gemini-2.5-flash',
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const chat: Chat = ai.chats.create({
+            model: 'gemini-3-flash-preview',
             history: history.map(msg => ({
                 role: msg.role,
                 parts: [{ text: msg.content }]
             })),
             config: {
-                systemInstruction: `Você é o assistente virtual do site "Meu Bairro Conectado". Sua principal função é ajudar os usuários a encontrar informações sobre os estabelecimentos locais, navegar pelas funcionalidades do site e entender os planos disponíveis. Você SÓ PODE responder a perguntas relacionadas ao "Meu Bairro Conectado". Se o usuário perguntar sobre qualquer outro assunto (história, ciência, notícias, etc.), recuse educadamente a resposta e reforce que sua especialidade é o site.`,
+                systemInstruction: `Você é o assistente virtual do site "Meu Bairro Conectado". Sua principal função é ajudar os usuários a encontrar informações sobre os estabelecimentos locais.`,
             }
         });
 
