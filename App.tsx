@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -6,14 +7,13 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import AboutPage from './pages/AboutPage';
 import PlansPage from './pages/PlansPage';
 import HelpPage from './pages/HelpPage';
-import CategoriesPage from './pages/CategoriesPage'; // Import new page
+import CategoriesPage from './pages/CategoriesPage';
 import Chatbot from './components/Chatbot';
 import BusinessDetailModal from './components/BusinessDetailModal';
 import { Business } from './types';
 import { trackPageView, trackEvent } from './services/analytics';
 
-
-type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories'; // Add 'categories'
+type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories';
 
 interface NotificationPayload {
     title: string;
@@ -23,7 +23,7 @@ interface NotificationPayload {
 
 const NotificationToast: React.FC<{ notification: NotificationPayload; onClose: () => void; }> = ({ notification, onClose }) => {
     useEffect(() => {
-        const timer = setTimeout(onClose, 6000); // Auto-close after 6 seconds
+        const timer = setTimeout(onClose, 6000);
         return () => clearTimeout(timer);
     }, [onClose]);
 
@@ -54,12 +54,11 @@ const NotificationToast: React.FC<{ notification: NotificationPayload; onClose: 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [notification, setNotification] = useState<NotificationPayload | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState(''); // New state for category page
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
 
-  // Rastreamento de visualização de página para o Google Analytics
   useEffect(() => {
     const pageMap: { [key in Page]: { path: string; title: string } } = {
       home: { path: '/', title: 'Página Inicial' },
@@ -68,17 +67,15 @@ const App: React.FC = () => {
       about: { path: '/quem-somos', title: 'Quem Somos' },
       plans: { path: '/planos', title: 'Planos' },
       help: { path: '/ajuda', title: 'Ajuda' },
-      categories: { path: '/categorias', title: 'Categorias' }, // Add categories page
+      categories: { path: '/categorias', title: 'Categorias' },
     };
     const pageInfo = pageMap[currentPage];
     if (pageInfo) {
-      // For categories, add the specific category to the path for better tracking
       const path = currentPage === 'categories' && selectedCategory ? `${pageInfo.path}/${selectedCategory}` : pageInfo.path;
       const title = currentPage === 'categories' && selectedCategory ? `${selectedCategory} - ${pageInfo.title}` : pageInfo.title;
       trackPageView(path, title);
     }
   }, [currentPage, selectedCategory]);
-
 
   useEffect(() => {
     const handleNotification = (event: Event) => {
@@ -97,7 +94,6 @@ const App: React.FC = () => {
 
         if (subscriptions.includes(categoryKey)) {
             setNotification(detail);
-            // Proteção: Verifica se a API de Notificação existe no navegador (evita crash no iPhone antigo)
             if ('Notification' in window && Notification.permission === 'granted') {
                 try {
                     new Notification(detail.title, { body: detail.body });
@@ -109,10 +105,7 @@ const App: React.FC = () => {
     };
 
     window.addEventListener('promotion-notification', handleNotification);
-
-    return () => {
-        window.removeEventListener('promotion-notification', handleNotification);
-    };
+    return () => window.removeEventListener('promotion-notification', handleNotification);
   }, []);
 
   const handleNavigateToCategories = () => {
@@ -129,14 +122,12 @@ const App: React.FC = () => {
     setSelectedBusiness(business);
     setIsModalOpen(true);
     
-    // Rastreia o clique no card da empresa (Evento Customizado - Fácil de ver)
     trackEvent('business_card_click', {
         business_name: business.name,
         business_category: business.category,
         business_id: business.id,
     });
 
-    // Mantém o evento padrão de Ecommerce do GA4
     trackEvent('view_item', {
         item_id: String(business.id),
         item_name: business.name,
@@ -144,10 +135,14 @@ const App: React.FC = () => {
     });
   }
 
+  const handleNavigateToBusinessRegistration = () => {
+    setCurrentPage('business');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onViewDetails={handleViewDetails} />;
+        return <HomePage onViewDetails={handleViewDetails} onNavigateToBusiness={handleNavigateToBusinessRegistration} />;
       case 'categories':
         return <CategoriesPage initialCategory={selectedCategory} onViewDetails={handleViewDetails} onSelectCategory={setSelectedCategory} />;
       case 'business':
@@ -161,7 +156,7 @@ const App: React.FC = () => {
       case 'help':
         return <HelpPage />;
       default:
-        return <HomePage onViewDetails={handleViewDetails} />;
+        return <HomePage onViewDetails={handleViewDetails} onNavigateToBusiness={handleNavigateToBusinessRegistration} />;
     }
   };
 
@@ -191,4 +186,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App
+export default App;

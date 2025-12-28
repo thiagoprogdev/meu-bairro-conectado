@@ -18,7 +18,7 @@ const featuredBusinesses = localBusinesses.slice(0, 8);
 
 interface HomePageProps {
     onViewDetails: (business: Business) => void;
-    onNavigateToBusiness: () => void;
+    onNavigateToBusiness?: () => void;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ onViewDetails, onNavigateToBusiness }) => {
@@ -42,7 +42,6 @@ const HomePage: React.FC<HomePageProps> = ({ onViewDetails, onNavigateToBusiness
             trackEvent('search', { search_term: searchTerm });
 
             try {
-                // Busca apenas nos parceiros locais cadastrados
                 const lowerCaseQuery = searchTerm.toLowerCase();
                 const results = localBusinesses.filter(b =>
                     b.name.toLowerCase().includes(lowerCaseQuery) ||
@@ -52,7 +51,6 @@ const HomePage: React.FC<HomePageProps> = ({ onViewDetails, onNavigateToBusiness
                 
                 setFilteredBusinesses(results);
 
-                // IA gera um resumo contextualizado sobre os parceiros encontrados
                 if (results.length > 0) {
                     const summaryPrompt = `O usuário buscou por "${searchTerm}" no app de guia comercial. Encontramos ${results.length} parceiros locais. Escreva uma frase curta convidando o usuário a conhecer esses estabelecimentos e valorizar o comércio local.`;
                     const summaryResponse = await generateText(summaryPrompt);
@@ -81,7 +79,6 @@ const HomePage: React.FC<HomePageProps> = ({ onViewDetails, onNavigateToBusiness
         <div className="container mx-auto max-w-5xl space-y-8">
             <ImageSlider />
 
-            {/* Barra de Busca Principal */}
             <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
                 <h1 className="text-4xl font-extrabold text-center mb-2 text-green-800">Explore o seu Bairro</h1>
                 <p className="text-center text-gray-500 mb-8">Encontre parceiros verificados perto de você.</p>
@@ -124,16 +121,17 @@ const HomePage: React.FC<HomePageProps> = ({ onViewDetails, onNavigateToBusiness
                             <ResultCard key={business.id} business={business} onViewDetails={() => onViewDetails(business)} />
                         ))}
                         
-                        {/* Card fixo para prospecção de novos clientes quando há busca */}
-                        <div onClick={onNavigateToBusiness} className="cursor-pointer bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col justify-center items-center text-center hover:bg-white hover:border-green-300 transition-all">
-                             <div className="bg-green-100 p-3 rounded-full mb-3 text-green-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                             </div>
-                             <h3 className="font-bold text-gray-800 text-sm">Seu negócio aqui?</h3>
-                             <p className="text-[10px] text-gray-500 mt-2">Seja encontrado por milhares de moradores do bairro.</p>
-                        </div>
+                        {onNavigateToBusiness && (
+                            <div onClick={onNavigateToBusiness} className="cursor-pointer bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col justify-center items-center text-center hover:bg-white hover:border-green-300 transition-all">
+                                <div className="bg-green-100 p-3 rounded-full mb-3 text-green-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h3 className="font-bold text-gray-800 text-sm">Seu negócio aqui?</h3>
+                                <p className="text-[10px] text-gray-500 mt-2">Seja encontrado por milhares de moradores do bairro.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
