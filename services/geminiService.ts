@@ -49,8 +49,8 @@ export const findNearbyPlaces = async (query: string, location: { latitude: numb
 export const getGoogleReviews = async (businessName: string): Promise<GenerateContentResponse> => {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        // Prompt mais incisivo para obter múltiplas avaliações
-        const prompt = `Acesse o Google Maps e extraia as 10 avaliações mais recentes e detalhadas deixadas por clientes para o estabelecimento "${businessName}". Liste os comentários reais e links originais.`;
+        // Prompt focado em obter 10 fragmentos de reviews reais
+        const prompt = `Extraia exatamente as 10 avaliações mais recentes do Google Maps para o estabelecimento "${businessName}". Retorne os textos originais das avaliações e seus respectivos links.`;
         
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
