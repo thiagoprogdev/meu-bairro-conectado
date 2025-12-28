@@ -22,6 +22,7 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
     const [googleReviews, setGoogleReviews] = useState<GoogleReviewSnippet[]>([]);
     const [isLoadingReviews, setIsLoadingReviews] = useState(true);
     const [errorReviews, setErrorReviews] = useState(false);
+    const [activePhoto, setActivePhoto] = useState(0);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -37,16 +38,20 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                     groundingChunks.forEach((chunk) => {
                         if (chunk.maps?.placeAnswerSources?.reviewSnippets) {
                             chunk.maps.placeAnswerSources.reviewSnippets.forEach((s) => {
-                                snippets.push({
-                                    text: s.review,
-                                    url: s.uri
-                                });
+                                // Evita duplicatas se houver
+                                if (!snippets.some(exist => exist.text === s.review)) {
+                                    snippets.push({
+                                        text: s.review,
+                                        url: s.uri
+                                    });
+                                }
                             });
                         }
                     });
                 }
                 
-                setGoogleReviews(snippets);
+                // Limitamos a 10 resultados caso a IA traga mais
+                setGoogleReviews(snippets.slice(0, 10));
             } catch (err) {
                 console.error("Erro ao carregar avaliações do Google:", err);
                 setErrorReviews(true);
@@ -68,31 +73,49 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
 
     return (
         <div 
-            className="fixed inset-0 bg-black bg-opacity-70 z-40 flex justify-center items-center backdrop-blur-sm" 
+            className="fixed inset-0 bg-black bg-opacity-70 z-40 flex justify-center items-center backdrop-blur-sm p-4" 
             onClick={onClose}
         >
             <div 
-                className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-4 animate-scale-up"
+                className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-up"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header Image/Gallery */}
-                <div className="relative h-48 md:h-64 bg-gray-100">
-                    {photos && photos.length > 0 ? (
-                        <img 
-                            src={photos[0]} 
-                            alt={name} 
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center text-green-100">
-                            <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                {/* Image Gallery Header */}
+                <div className="relative group">
+                    <div className="h-64 md:h-80 w-full bg-gray-200">
+                        {photos && photos.length > 0 ? (
+                            <img 
+                                src={photos[activePhoto]} 
+                                alt={`${name} - Foto ${activePhoto + 1}`} 
+                                className="w-full h-full object-cover transition-all duration-500"
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center text-green-100">
+                                <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Thumbnails Overlay */}
+                    {photos && photos.length > 1 && (
+                        <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 px-4 overflow-x-auto pb-2 scrollbar-hide">
+                            {photos.map((photo, idx) => (
+                                <button 
+                                    key={idx}
+                                    onClick={() => setActivePhoto(idx)}
+                                    className={`w-12 h-12 rounded-lg border-2 flex-shrink-0 overflow-hidden transition-all ${idx === activePhoto ? 'border-white scale-110 shadow-lg' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                                >
+                                    <img src={photo} alt="" className="w-full h-full object-cover" />
+                                </button>
+                            ))}
                         </div>
                     )}
-                    <button onClick={onClose} className="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
+
+                    <button onClick={onClose} className="absolute top-4 right-4 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors z-10">
                         &times;
                     </button>
-                    <div className="absolute bottom-4 left-4 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        Parceiro Verificado
+                    <div className="absolute top-4 left-4 bg-green-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg z-10">
+                        PARCEIRO VERIFICADO
                     </div>
                 </div>
 
@@ -146,51 +169,64 @@ const BusinessDetailModal: React.FC<BusinessDetailModalProps> = ({ business, onC
                     {/* Google Reviews Section */}
                     <div className="border-t pt-8">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-gray-800">Avaliações em Tempo Real</h3>
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase tracking-widest">Google Maps</span>
+                            <div>
+                                <h3 className="text-xl font-bold text-gray-800">Avaliações do Bairro</h3>
+                                <p className="text-[10px] text-gray-400">Sincronizado com o Google Maps via IA</p>
+                            </div>
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase tracking-widest flex items-center">
+                                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2 animate-pulse"></span>
+                                AO VIVO
+                            </span>
                         </div>
                         
                         {isLoadingReviews ? (
                             <div className="space-y-4">
-                                {[1, 2].map(i => (
+                                {[1, 2, 3].map(i => (
                                     <div key={i} className="animate-pulse pb-4 border-b border-gray-50">
-                                        <div className="h-4 bg-gray-100 rounded w-32 mb-2"></div>
+                                        <div className="flex items-center mb-2">
+                                            <div className="h-3 bg-gray-100 rounded w-24"></div>
+                                        </div>
                                         <div className="h-3 bg-gray-50 rounded w-full mb-1"></div>
                                         <div className="h-3 bg-gray-50 rounded w-4/5"></div>
                                     </div>
                                 ))}
+                                <p className="text-center text-[10px] text-gray-400 italic">Buscando avaliações recentes...</p>
                             </div>
                         ) : errorReviews ? (
                             <div className="text-center py-4 bg-red-50 rounded-xl text-red-500 text-xs">
                                 Não foi possível carregar as avaliações do Google agora.
                             </div>
                         ) : googleReviews.length === 0 ? (
-                            <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                            <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                <svg className="mx-auto h-8 w-8 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
                                 <p className="text-gray-400 text-sm italic">Nenhuma avaliação detalhada encontrada no Google Maps.</p>
                             </div>
                         ) : (
-                            <div className="space-y-6">
+                            <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                                 {googleReviews.map((review, index) => (
-                                    <div key={index} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                        <div className="flex items-center mb-2">
+                                    <div key={index} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-green-200 transition-colors">
+                                        <div className="flex items-center justify-between mb-2">
                                             <StarRating rating={5} />
-                                            <span className="ml-2 text-[10px] text-gray-400">Via Google Maps</span>
+                                            <span className="text-[9px] text-gray-400 font-medium">#{index + 1} Recente</span>
                                         </div>
-                                        <p className="text-gray-700 text-sm leading-relaxed">"{review.text}"</p>
+                                        <p className="text-gray-700 text-sm italic leading-relaxed font-serif">"{review.text}"</p>
                                         <div className="mt-3 text-right">
                                             <a 
                                                 href={review.url} 
                                                 target="_blank" 
                                                 rel="noopener noreferrer" 
-                                                className="text-[10px] text-green-600 font-bold hover:underline"
+                                                className="text-[10px] text-green-600 font-bold hover:underline bg-green-50 px-2 py-1 rounded"
                                             >
-                                                Ver no Maps &rarr;
+                                                Ver Completa no Maps &rarr;
                                             </a>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
+                        <p className="text-center text-[9px] text-gray-300 mt-6 uppercase tracking-[0.2em]">Tecnologia Gemini 2.5 Flash</p>
                     </div>
                 </div>
             </div>

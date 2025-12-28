@@ -44,13 +44,13 @@ export const findNearbyPlaces = async (query: string, location: { latitude: numb
 };
 
 /**
- * Busca trechos de avaliações reais do Google Maps para um estabelecimento específico.
- * Retorna uma Promise de GenerateContentResponse contendo groundingMetadata.
+ * Busca as 10 avaliações mais recentes e reais do Google Maps para um estabelecimento específico.
  */
 export const getGoogleReviews = async (businessName: string): Promise<GenerateContentResponse> => {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const prompt = `Encontre as avaliações mais recentes e relevantes do Google Maps para o estabelecimento "${businessName}". Por favor, retorne trechos das avaliações de clientes reais.`;
+        // Prompt mais incisivo para obter múltiplas avaliações
+        const prompt = `Acesse o Google Maps e extraia as 10 avaliações mais recentes e detalhadas deixadas por clientes para o estabelecimento "${businessName}". Liste os comentários reais e links originais.`;
         
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
