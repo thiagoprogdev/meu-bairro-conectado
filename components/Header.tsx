@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AppPage } from '../types';
 
-type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories';
 interface HeaderProps {
     currentPage: string;
-    setCurrentPage: (page: Page) => void;
+    setCurrentPage: (page: AppPage) => void;
     onNavigateHome: () => void;
     onNavigateToCategories: () => void;
 }
@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, onNavigate
         };
     }, []);
     
-    const handleMobileLinkClick = (page: Page) => {
+    const handleMobileLinkClick = (page: AppPage) => {
         setCurrentPage(page);
         setIsMobileMenuOpen(false);
     }

@@ -1,3 +1,29 @@
+
+export interface Review {
+  rating: number;
+  comment: string;
+  author: string;
+}
+
+export interface Business {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  shortDescription: string;
+  location: {
+    mapsUrl: string;
+  };
+  contact: {
+    phone: string;
+    instagram?: string;
+    facebook?: string;
+  };
+  openingHours: string;
+  photos: string[];
+  reviews: Review[];
+}
+
 export interface ChatMessage {
   role: 'user' | 'model';
   content: string;
@@ -20,53 +46,5 @@ export interface GroundingChunk {
   };
 }
 
-
-export interface Review {
-  rating: number;
-  comment: string;
-  author: string;
-}
-
-export interface Business {
-  id: number;
-  name: string;
-  category: string;
-  description: string;
-  shortDescription: string;
-  location: {
-    mapsUrl: string;
-  };
-  contact: {
-    phone: string; 
-    instagram?: string;
-    facebook?: string;
-  };
-  openingHours: string; // Novo campo para horário de funcionamento
-  photos: string[]; 
-  reviews: Review[];
-}
-
-
-export interface Review {
-  rating: number;
-  comment: string;
-  author: string;
-}
-
-export interface Business {
-  id: number;
-  name: string;
-  category: string;
-  description: string;
-  shortDescription: string;
-  location: {
-    mapsUrl: string;
-  };
-  contact: {
-    phone: string; 
-    instagram?: string;
-    facebook?: string;
-  };
-  photos: string[]; 
-  reviews: Review[];
-}
+// Added shared navigation type to resolve type mismatch between Header and App components
+export type AppPage = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories';

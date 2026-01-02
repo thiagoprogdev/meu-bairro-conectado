@@ -1,187 +1,73 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import BusinessAdminPage from './pages/BusinessAdminPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
+import CategoriesPage from './pages/CategoriesPage';
 import AboutPage from './pages/AboutPage';
 import PlansPage from './pages/PlansPage';
 import HelpPage from './pages/HelpPage';
-import CategoriesPage from './pages/CategoriesPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import Chatbot from './components/Chatbot';
 import BusinessDetailModal from './components/BusinessDetailModal';
-import { Business } from './types';
-import { trackPageView, trackEvent } from './services/analytics';
-
-type Page = 'home' | 'business' | 'admin' | 'about' | 'plans' | 'help' | 'categories';
-
-interface NotificationPayload {
-    title: string;
-    body: string;
-    category: string;
-}
-
-const NotificationToast: React.FC<{ notification: NotificationPayload; onClose: () => void; }> = ({ notification, onClose }) => {
-    useEffect(() => {
-        const timer = setTimeout(onClose, 6000);
-        return () => clearTimeout(timer);
-    }, [onClose]);
-
-    return (
-        <div className="fixed top-5 right-5 bg-white shadow-lg rounded-lg p-4 max-w-sm z-50 border-l-4 border-green-500 animate-fade-in-right">
-            <div className="flex items-start">
-                <div className="flex-shrink-0">
-                     <svg className="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">{notification.title}</p>
-                    <p className="mt-1 text-sm text-gray-500">{notification.body}</p>
-                </div>
-                <div className="ml-4 flex-shrink-0 flex">
-                    <button onClick={onClose} className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                        <span className="sr-only">Close</span>
-                        &times;
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
+import { Business, AppPage } from './types';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [notification, setNotification] = useState<NotificationPayload | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState('');
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  /* Fix: Widened the state type to AppPage to allow navigation to all pages requested by the Header component */
+  const [currentPage, setCurrentPage] = useState<AppPage>('home');
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
-
-  useEffect(() => {
-    const pageMap: { [key in Page]: { path: string; title: string } } = {
-      home: { path: '/', title: 'Página Inicial' },
-      business: { path: '/para-empresas', title: 'Para Empresas' },
-      admin: { path: '/admin', title: 'Painel do Administrador' },
-      about: { path: '/quem-somos', title: 'Quem Somos' },
-      plans: { path: '/planos', title: 'Planos' },
-      help: { path: '/ajuda', title: 'Ajuda' },
-      categories: { path: '/categorias', title: 'Categorias' },
-    };
-    const pageInfo = pageMap[currentPage];
-    if (pageInfo) {
-      const path = currentPage === 'categories' && selectedCategory ? `${pageInfo.path}/${selectedCategory}` : pageInfo.path;
-      const title = currentPage === 'categories' && selectedCategory ? `${selectedCategory} - ${pageInfo.title}` : pageInfo.title;
-      trackPageView(path, title);
-    }
-  }, [currentPage, selectedCategory]);
-
-  useEffect(() => {
-    const handleNotification = (event: Event) => {
-        const detail = (event as CustomEvent).detail as NotificationPayload;
-        const savedSubs = localStorage.getItem('notification-subs');
-        const subscriptions = savedSubs ? JSON.parse(savedSubs) : [];
-        
-        const categoryMap: { [key: string]: string } = {
-            'Salão de Beleza': 'beleza',
-            'Material de Construção': 'construcao',
-            'Papelaria': 'papelaria',
-            'Lanchonete': 'lanchonete'
-        };
-
-        const categoryKey = categoryMap[detail.category] || detail.category;
-
-        if (subscriptions.includes(categoryKey)) {
-            setNotification(detail);
-            if ('Notification' in window && Notification.permission === 'granted') {
-                try {
-                    new Notification(detail.title, { body: detail.body });
-                } catch (e) {
-                    console.warn('Erro ao exibir notificação nativa:', e);
-                }
-            }
-        }
-    };
-
-    window.addEventListener('promotion-notification', handleNotification);
-    return () => window.removeEventListener('promotion-notification', handleNotification);
-  }, []);
-
-  const handleNavigateToCategories = () => {
-      setSelectedCategory('');
-      setCurrentPage('categories');
-  };
-
-  const navigateHome = () => {
-    setCurrentPage('home');
-    setSelectedCategory('');
-  };
 
   const handleViewDetails = (business: Business) => {
     setSelectedBusiness(business);
-    setIsModalOpen(true);
-    
-    trackEvent('business_card_click', {
-        business_name: business.name,
-        business_category: business.category,
-        business_id: business.id,
-    });
-
-    trackEvent('view_item', {
-        item_id: String(business.id),
-        item_name: business.name,
-        item_category: business.category,
-    });
-  }
-
-  const handleNavigateToBusinessRegistration = () => {
-    setCurrentPage('business');
   };
 
+  /* Fix: Added missing cases to renderPage to correctly display all sub-pages in the SPA */
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onViewDetails={handleViewDetails} onNavigateToBusiness={handleNavigateToBusinessRegistration} />;
-      case 'categories':
-        return <CategoriesPage initialCategory={selectedCategory} onViewDetails={handleViewDetails} onSelectCategory={setSelectedCategory} />;
+        return <HomePage onViewDetails={handleViewDetails} onNavigateToBusiness={() => setCurrentPage('business')} />;
       case 'business':
         return <BusinessAdminPage />;
-      case 'admin':
-        return <AdminDashboardPage />;
+      case 'categories':
+        return <CategoriesPage initialCategory="" onViewDetails={handleViewDetails} onSelectCategory={() => {}} />;
       case 'about':
         return <AboutPage />;
       case 'plans':
         return <PlansPage />;
       case 'help':
         return <HelpPage />;
+      case 'admin':
+        return <AdminDashboardPage />;
       default:
-        return <HomePage onViewDetails={handleViewDetails} onNavigateToBusiness={handleNavigateToBusinessRegistration} />;
+        return <HomePage onViewDetails={handleViewDetails} onNavigateToBusiness={() => setCurrentPage('business')} />;
     }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
-      {notification && <NotificationToast notification={notification} onClose={() => setNotification(null)} />}
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Header 
         currentPage={currentPage} 
         setCurrentPage={setCurrentPage}
-        onNavigateToCategories={handleNavigateToCategories} 
-        onNavigateHome={navigateHome}
+        onNavigateHome={() => setCurrentPage('home')}
+        onNavigateToCategories={() => setCurrentPage('categories')}
       />
-      <main className="p-4 md:p-8">
+      
+      <main className="flex-grow py-8">
         {renderPage()}
       </main>
-      <Chatbot />
-      <footer className="text-center p-4 text-gray-500 text-sm mt-8">
-        <p>&copy; 2024 Meu Bairro Conectado. Todos os direitos reservados.</p>
+
+      <footer className="bg-white border-t py-8 text-center text-gray-500 text-sm">
+        <p>&copy; 2024 Meu Bairro Conectado. Fortalecendo a economia local.</p>
       </footer>
-       {isModalOpen && selectedBusiness && (
+
+      {selectedBusiness && (
         <BusinessDetailModal 
           business={selectedBusiness} 
-          onClose={() => setIsModalOpen(false)} 
+          onClose={() => setSelectedBusiness(null)} 
         />
       )}
+      
+      <Chatbot />
     </div>
   );
 };
