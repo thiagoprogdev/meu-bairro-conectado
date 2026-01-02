@@ -2,10 +2,11 @@
 import { GoogleGenAI, GenerateContentResponse, Chat } from "@google/genai";
 import { ChatMessage } from '../types';
 
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
 // Use gemini-3-flash-preview for general text tasks
 export const generateText = async (prompt: string): Promise<GenerateContentResponse> => {
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-3-flash-preview",
             contents: prompt,
@@ -20,7 +21,6 @@ export const generateText = async (prompt: string): Promise<GenerateContentRespo
 // Use gemini-2.5-flash for maps grounding tasks
 export const findNearbyPlaces = async (query: string, location: { latitude: number; longitude: number; }): Promise<GenerateContentResponse> => {
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: query,
@@ -43,34 +43,9 @@ export const findNearbyPlaces = async (query: string, location: { latitude: numb
     }
 };
 
-/**
- * Busca as 10 avaliações mais recentes e reais do Google Maps para um estabelecimento específico.
- */
-export const getGoogleReviews = async (businessName: string): Promise<GenerateContentResponse> => {
-    try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        // Prompt focado em obter 10 fragmentos de reviews reais
-        const prompt = `Extraia exatamente as 10 avaliações mais recentes do Google Maps para o estabelecimento "${businessName}". Retorne os textos originais das avaliações e seus respectivos links.`;
-        
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-            config: {
-                tools: [{ googleMaps: {} }],
-            },
-        });
-        
-        return response;
-    } catch (error) {
-        console.error("Error fetching Google reviews:", error);
-        throw new Error("Falha ao buscar avaliações no Google Maps.");
-    }
-};
-
 // Use gemini-3-flash-preview for vision/multimodal tasks
 export const analyzeImage = async (prompt: string, imageBase64: string, mimeType: string): Promise<GenerateContentResponse> => {
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const imagePart = {
             inlineData: {
                 data: imageBase64,
@@ -93,7 +68,6 @@ export const analyzeImage = async (prompt: string, imageBase64: string, mimeType
 // Use gemini-3-flash-preview for chat tasks
 export const getChatResponse = async (history: ChatMessage[], newMessage: string) => {
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const chat: Chat = ai.chats.create({
             model: 'gemini-3-flash-preview',
             history: history.map(msg => ({
